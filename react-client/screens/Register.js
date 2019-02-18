@@ -1,23 +1,13 @@
 import React, { Component } from "react";
 import {
-  Icon,
-  Input,
-  H1,
-  FormGrp,
-  Touch,
-  BtnTxt,
-  ImgBg,
-  Avoid,
-  GrayFilter,
-  Error,
-  isRTL
+  Icon,Input,H1,
+  FormGrp,Touch,BtnTxt,
+  ImgBg,Avoid,GrayFilter,
+  Error,isRTL
 } from "./Login";
 import {
-  ActivityIndicator,
-  Text,
-  AsyncStorage,
-  Keyboard,
-  View
+  ActivityIndicator,Text,
+  AsyncStorage,Keyboard,View
 } from "react-native";
 import RegPic from "../assets/register.jpg";
 import { RSA } from "react-native-rsa-native";

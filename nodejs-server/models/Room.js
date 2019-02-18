@@ -11,6 +11,7 @@ const RoomSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 35
   },
+  avatar: {},
   requests: { type: [String], default: [] },
   users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   leader: String,

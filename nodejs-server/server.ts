@@ -13,7 +13,7 @@ import { genSalt, hash, compare } from "bcryptjs";
 import Usr from "./models/User.js";
 import Session from "./models/Session.js";
 import Room from "./models/Room.js";
-import { randomBytes, createCipheriv, publicEncrypt, createCipher } from "crypto";
+import { randomBytes, publicEncrypt } from "crypto";
 import { mode, AES, enc, pad } from "crypto-js";
 import { readFileSync } from "fs";
 var constants = require("constants");
@@ -23,32 +23,32 @@ let images = [];
 images.push({
   name: "Av1",
   uri:
-    "data:image/jpeg;base64," +
-    readFileSync("./assets/avatar1.jpeg", "base64")
+    "data:image/png;base64," +
+    readFileSync("./assets/avatar1.png", "base64")
 });
 images.push({
   name: "Av2",
   uri:
-    "data:image/jpeg;base64," +
-    readFileSync("./assets/avatar2.jpeg", "base64")
+    "data:image/png;base64," +
+    readFileSync("./assets/avatar2.png", "base64")
 });
 images.push({
   name: "Av3",
   uri:
-    "data:image/jpeg;base64," +
-    readFileSync("./assets/avatar3.jpeg", "base64")
+    "data:image/png;base64," +
+    readFileSync("./assets/avatar3.png", "base64")
 });
 images.push({
   name: "Av4",
   uri:
-    "data:image/jpeg;base64," +
-    readFileSync("./assets/avatar4.jpeg", "base64")
+    "data:image/png;base64," +
+    readFileSync("./assets/avatar4.png", "base64")
 });
 images.push({
   name: "Av5",
   uri:
-    "data:image/jpeg;base64," +
-    readFileSync("./assets/avatar5.jpeg", "base64")
+    "data:image/png;base64," +
+    readFileSync("./assets/avatar5.png", "base64")
 });
 // Extra Images
 let imgs = [];
@@ -61,7 +61,7 @@ imgs.push({
 imgs.push({
   name: "noAv",
   uri:
-    "data:image/jpeg;base64," +
+    "data:image/png;base64," +
     readFileSync("./assets/noavatar.jpeg", "base64")
 });
 
@@ -399,7 +399,7 @@ io.on("connection", socket => {
 
   // Handle Room Creation
   socket.on("createRoom", async data => {
-    let { token, name } = data; // roomName + token from the form
+    let { token, name, avatar } = data; // roomName + token from the form
     // Form Data Validation
     if (name === null || name === undefined || name === "") {
       io.to(socket.id).emit("groupFormError", "اكتب اسم المجموعة");
@@ -421,13 +421,19 @@ io.on("connection", socket => {
                 name,
                 leader: user.username,
                 users: [user._id],
+                to: [user._id],
+                avatar: avatar === "" ? { uri: imgs[0].uri } : avatar
               })
               // Push the room to the user's rooms array
               await user.rooms.push(newRoom._id);
               // Save the models
               let savedRoom = await newRoom.save();
               let savedUser = await user.save();
-              socket.to(socket.id).emit("roomCreated", savedRoom);
+              // Emit the new room to the client
+              io.to(socket.id).emit("roomCreated", savedRoom);
+              // Join the room
+              socket.join(newRoom.name);
+              console.log(`${savedUser.username} created ${savedRoom.name}`);
 
             }
           } else {
@@ -443,30 +449,31 @@ io.on("connection", socket => {
     }
   });
   // Handle Fetching/joining the rooms
-  socket.on("getRooms", token => {
-    console.log(token);
-    Session.findOne({ token: token }, (err, foundSession) => {
-      if (err) {
-        console.log(err);
-        return;
-      } else if (foundSession === null || foundSession === undefined) {
-        console.log("The Session Doesn't Exists");
-        return;
-      } else {
-        Usr.findById(foundSession.user, ["rooms", "username"])
-          .then(foundUser => {
-            foundUser.populate("rooms", (err, populated) => {
-              populated.rooms.forEach((room, i) => {
-                console.log(room);
-                socket.join(room.name);
-                console.log("Joined", room.name);
-              });
-              io.to(socket.id).emit("rooms", populated.rooms);
-            });
+  socket.on("getRooms", async token => {
+    try {
+      let session = await Session.findOne({ token });
+      if (session) {
+        let user = await Usr.findById(session.user).populate("rooms");
+        if (user) {
+          // emit the rooms to the client
+          io.to(socket.id).emit("rooms", user.rooms);
+          // join the rooms
+          user.rooms.forEach(room => {
+            socket.join(room.name);
           })
-          .catch(err => console.log(err));
+          console.log(`${user.username} has ${user.rooms.length} rooms`);
+        } else {
+          console.log("the user doesn't exist");
+          return;
+        }
+      } else {
+        console.log("the user isn't authenticated");
+        return;
       }
-    });
+    } catch (err) {
+      console.log(err);
+      return;
+    }
   });
   // Handle Logout , Delete Session
   socket.on("logout", data => {
@@ -487,92 +494,73 @@ io.on("connection", socket => {
   });
 
   // Handle New Text Msgs
-  socket.on("newMsg", data => {
+  socket.on("newMsg", async data => {
     const { msg, token, roomName } = data;
-    Session.findOne({ token: token }, (err, foundSession) => {
-      if (err) {
-        console.log(err);
-        return;
-      } else if (foundSession === null || foundSession === undefined) {
-        console.log("the token is expired");
-      } else {
-        Usr.findById(foundSession.user)
-          .then(foundUser => {
-            if (foundUser === null || foundUser === undefined) {
-              console.log("The User Doesn't Exist");
-              return;
-            } else {
-              Room.findOne({ name: roomName })
-                .populate("users", ["publicKey", "username"])
-                .then(foundRoom => {
-                  if (foundRoom === null || foundRoom === undefined) {
-                    console.log("the room doesn't exist");
-                    return;
-                  } else {
-                    // Initialization vector
-                    let iv = randomBytes(8).toString("hex");
-                    // Symmetric encryption key AES 256bit/32bytes
-                    let key = randomBytes(32).toString("hex");
-                    // Encrypted Bytes
-                    let encrypted = AES.encrypt(msg, key, { iv: iv, mode: mode.CBC, padding: pad.Pkcs7 })
-                    // CipherText
-                    let cipherText = encrypted.toString();
-                    console.log("cipher-text", cipherText);
-                    let payloads = []; // each user in the room has an encrypted payload
-                    let buff = Buffer.from(key);
-                    let from = foundUser.username;
-                    let to = []; // array of 
-                    foundRoom.users.forEach((user, i) => {
-                      let EncryptedKey = publicEncrypt(
-                        {
-                          key: user.publicKey,
-                          padding: constants.RSA_PKCS1_PADDING
-                        },
-                        buff
-                      ).toString("base64");
-                      payloads.push({
-                        roomName: foundRoom.name,
-                        from: foundUser.username,
-                        msg: cipherText,
-                        key: EncryptedKey,
-                        publicKey: user.publicKey,
-                        iv
-                      });
-                      to.push({
-                        publicKey: user.publicKey,
-                        key: EncryptedKey,
-                        username: user.username
-                      });
-                    });
-                    if (
-                      foundRoom.chat === null ||
-                      foundRoom.chat === undefined ||
-                      foundRoom.chat.length === 0
-                    ) {
-                      foundRoom.chat = [
-                        { from, to, msg: cipherText, isImage: false, iv }
-                      ];
-                    } else {
-                      foundRoom.chat.push({
-                        from, to, msg: cipherText, isImg: false, iv
-                      });
-                    }
-                    foundRoom.save()
-                      .then(savedRoom => {
-                        console.log("Saved Room", savedRoom.name);
-                        console.log(payloads);
-                        io.to(savedRoom.name).emit("Msg", payloads);
-                      })
-                      .catch(err => console.log(err));
+    try {
+      let session = await Session.findOne({ token });
+      if (session) {
+        let user = await Usr.findById(session.user);
+        if (user) {
+          let room = await Room.findOne({ name: roomName }).populate("users", ["publicKey", "username"]);
+          console.log("newMsg[users]", room.users.length);
+          // Initialization vector
+          let iv = randomBytes(8).toString("hex");
+          // Symmetric encryption key AES 256bit/32bytes
+          let key = randomBytes(32).toString("hex");
+          // Encrypted Bytes
+          let encrypted = AES.encrypt(msg, key, { iv: iv, mode: mode.CBC, padding: pad.Pkcs7 })
+          // CipherText
+          let cipherText = encrypted.toString();
+          console.log("cipher-text", cipherText);
+          let buff = Buffer.from(key);
+          let from = user.username;
+          let to = []; // array of 
+          if (room) {
+            room.users.forEach(usr => {
+              let encKey = publicEncrypt(
+                {
+                  key: usr.publicKey,
+                  padding: constants.RSA_PKCS1_PADDING
+                },
+                buff
+              ).toString("base64");
+              to.push({
+                username: usr.username,
+                publicKey: usr.publicKey,
+                key: encKey
+              })
+            })
+            if (to.length === room.users.length) {
+              // Push the new Chat object to the chat array
+              room.chat.push({
+                iv, from, to,
+                isImg: false, msg: cipherText
+              })
 
-                  }
+              let savedRoom = await room.save();
+              console.log(`${from} sent a msg to ${room.name}`);
+              io.to(savedRoom.name).emit("Msg",
+                {
+                  msg: cipherText, to, iv,
+                  from, roomName: savedRoom.name
                 })
-                .catch(err => console.log(err));
             }
-          })
-          .catch(err => console.log(err));
+          } else {
+            console.log("the room doesn't exist");
+            return;
+          }
+        } else {
+          console.log("the user doesn't exist");
+          return;
+        }
+      } else {
+        console.log("the user isn't authenticated");
+        return;
       }
-    });
+    } catch (err) {
+      console.log(err);
+      return;
+    }
   });
 
   // Handle Group Invitations ( group/room Leader ==Invites==> User)

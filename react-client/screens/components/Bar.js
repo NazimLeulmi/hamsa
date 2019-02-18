@@ -46,19 +46,19 @@ export const Btn = styled(Uploader)`
 const TopBar = (props) => (
     <Bar>
         {/* Group/User Avatar */}
-        {props.image && (
-            <AvContainer
-                size={80}
-                color="#5c96ac"
-                onPress={props.inRoom ? props.inRoomRequests ? null : props.dropDown : props.navigateProfile}
-            >
-                <Avatar size={80} source={{ uri: props.image.uri }} resizeMode="cover" />
-            </AvContainer>
-        )}
-        {/* username/group-name */}
-        <Text style={{ color: "#5c96ac" }}>
-            {props.inRoom ? props.roomName : props.username}
-        </Text>
+        <AvContainer
+            size={80}
+            color="#5c96ac"
+            onPress={props.inRoom ? props.inRoomRequests ? null : props.dropDown : props.navigateProfile}
+        >
+
+            <Avatar size={80} source={props.roomAvatar ? props.roomAvatar : { uri: props.image.uri }} />
+        </AvContainer>
+        {/* group name */}
+        {props.inRoom &&
+            <Text style={{ color: "#5c96ac" }}>
+                {props.roomName}
+            </Text>}
         {/* Navigate Back to Rooms or Toggle The PopForm */}
         {props && <Btn blue onPress={() => {
             if (props.inRoom === true) {
@@ -76,54 +76,31 @@ const TopBar = (props) => (
         }}
             style={{ marginLeft: "auto" }}>
             <Icon
-                name="message-circle"
-                size={20}
+                name="users"
+                size={30}
                 color="#5C96AC"
             />
-
-            <Text style={{ color: "#5c96ac", fontSize: 10 }}>
-                {props.inRoomRequests === true ?
-                    "مجموعتي" : props.inRoom === true || props.inUserRequests === true ?
-                        "مجموعاتي" : "إنشئ "}
-            </Text>
         </Btn>}
         {/* Request a group Leader to join a group */}
         {props.inRoom === false && props.inUserRequests === false &&
-            <Btn onPress={props.requestToJoin}>
+            <Btn blue onPress={props.requestToJoin}>
                 <Icon
                     name="message-square"
-                    size={20}
-                    color="black"
+                    size={30}
+                    color="#5C96AC"
                 />
-                <Text style={{ color: "black", fontSize: 10 }}>
-                    ادخل
-                </Text>
             </Btn>}
         {/* Invitations or Requests depending on the props*/}
-        {props.inUserRequests === false && props.inRoomRequests === false ?
-            props.inRoom ? props.roomLeader === props.username ?
-                <Btn blue onPress={props.goInRoomRequests}>
-                    <Icon
-                        name="bell"
-                        size={20}
-                        color="#5C96AC"
-                    />
-
-                    <Text style={{ color: "#5c96ac", fontSize: 10 }}>
-                        دعوات
-            </Text>
-                </Btn> : null
-                : <Btn blue onPress={props.goInUserRequests}>
-                    <Icon
-                        name="bell"
-                        size={20}
-                        color="#5C96AC"
-                    />
-
-                    <Text style={{ color: "#5c96ac", fontSize: 10 }}>
-                        دعوات
-            </Text>
-                </Btn> : null
+        {props.inUserRequests === false && props.inRoomRequests === false &&
+            <Btn blue
+                onPress={props.inRoom ? props.goInRoomRequests : props.goInUserRequests}
+            >
+                <Icon
+                    name="bell"
+                    size={30}
+                    color="#5C96AC"
+                />
+            </Btn>
         }
 
 

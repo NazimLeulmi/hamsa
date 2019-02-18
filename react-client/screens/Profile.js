@@ -14,14 +14,16 @@ const Avatar = styled(Image)`
   height: 200;
   border-radius: 200;
   margin: 5px;
+  border:1px solid gray;
 `;
 const AvContainer = styled(TouchableOpacity)`
   height: 100%;
   width: 20%;
   position: relative;
   border: ${props =>
-    props.src === props.selected ? "2px solid white" : "0px"};
+    props.name === props.selected ? "2px solid white" : "0px"};
   margin-left: 2px;
+  background:rgba(0,0,0,.25);
 `;
 const Av = styled(Image)`
   width: 100%;
@@ -58,7 +60,7 @@ export default class Profile extends Component {
       this.avatar = this.props.navigation.state.params.avatar;
       this.keyPair = this.props.navigation.state.params.keyPair;
     } else {
-      this.socket = IO("http://192.168.0.166:5000");
+      this.socket = IO("http://192.168.0.86:5000");
       this.username = null;
       this.token = null;
       this.avatar = null;
@@ -75,7 +77,7 @@ export default class Profile extends Component {
       socket: this.socket,
       avatarSource: { uri: this.avatar.uri },
       downSource: null,
-      avSelected: null,
+      selected: null,
       username: this.username,
       images: null,
       token: this.token,
@@ -150,10 +152,11 @@ export default class Profile extends Component {
     for (let i in images) {
       if (images[i].name === name) {
         picked = images[i];
+        console.log(`${picked.name} has been picked`)
         break;
       }
     }
-    this.setState({ avSelected: { uri: picked.uri }, avatarSource: { uri: picked.uri } });
+    this.setState({selected:picked.name, avatarSource: { uri: picked.uri } });
     return;
   };
   static navigationOptions = {
@@ -209,8 +212,8 @@ export default class Profile extends Component {
             this.state.images.map((img, i) => {
               return (
                 <AvContainer
-                  selected={this.state.avSelected}
-                  src={{ uri: img.uri }}
+                  selected={this.state.selected}
+                  name={img.name}
                   onPress={this.onSelect.bind(this, img.name)}
                   key={i}
                 >

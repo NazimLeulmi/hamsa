@@ -6,8 +6,8 @@ import { Btn, AvContainer, Avatar } from "./Bar";
 import { Text, Keyboard } from "react-native";
 import { AlertContainer } from "./Alert"
 import ImagePicker from "react-native-image-picker";
-import { readFile } from "react-native-fs";
 import LoginBg from "../../assets/login.jpg";
+import GroupAvatar from "../../assets/group.png";
 
 const GroupInput = styled(Input)`
   border: 1px solid #333333;
@@ -34,15 +34,7 @@ const FormBtn = styled(Btn)`
   border-radius: 10px;
 `;
 
-const IconContainer = styled.View`
-    width:100%;
-    height:auto;
-    display:flex;
-    flex-direction:row;
-    align-items:center;
-    justify-content:center;
-    margin:10px;
-`;
+
 export default class PopForm extends Component {
     // Props = {inRoom,username,socket,roomName,token}
     constructor(props) {
@@ -50,6 +42,7 @@ export default class PopForm extends Component {
         console.log("LoginBG", LoginBg);
         this.state = {
             name: "",
+            avatar: "",
             focus: false,
             RTL: true,
             error: null,
@@ -80,7 +73,8 @@ export default class PopForm extends Component {
                 Keyboard.dismiss();
                 this.props.socket.emit("createRoom", {
                     name: this.state.name,
-                    token: this.props.token
+                    token: this.props.token,
+                    avatar: this.state.avatar
                 });
             }
         }
@@ -121,7 +115,7 @@ export default class PopForm extends Component {
                 //   this.state.socket.emit("imageUp", response.data);
                 // }
                 this.setState({
-                    avatarSource: { uri: "data:image/jpeg;base64," + response.data },
+                    avatar: { uri: "data:image/jpeg;base64," + response.data },
                 });
             }
         });
@@ -143,20 +137,23 @@ export default class PopForm extends Component {
                         style={{ right: 10, margin: 10, position: "absolute" }}
                         onPress={this.props.toggleForm}
                     />
-                    <IconContainer>
-                        {/* Group Avatar */}
-                        {this.props.inRoom === false && this.props.joinRequest === false &&
-                            <AvContainer onPress={this.onPick} size={50}
-                                color={this.state.focus ? "white" : "black"}>
-                                <Avatar source={this.state.avatarSource} size={50}></Avatar>
-                            </AvContainer>
-                        }
+                    {/* Group Avatar */}
+                    {(this.props.inRoom === false && this.props.joinRequest === false) ?
+                        <AvContainer onPress={this.onPick} size={65}
+                            color={this.state.focus ? "white" : "black"}>
+                            <Avatar
+                                source={this.state.avatar === "" ? GroupAvatar : this.state.avatar}
+                                size={64}
+                            >
+                            </Avatar>
+                        </AvContainer> :
+
                         <Icon
                             name={this.props.inRoom ? "user" : "users"}
                             size={50}
                             color={this.state.focus ? "white" : "#333333"}
                         />
-                    </IconContainer>
+                    }
                     <GroupInput
                         placeholder={this.props.inRoom ? "اسم الشخص" : "اسم المجموعة"}
                         placeholderTextColor="white"

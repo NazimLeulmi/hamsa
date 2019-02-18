@@ -3,12 +3,12 @@ package com.socket_chat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.rnfs.RNFSPackage;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.RNRSA.RNRSAPackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.imagepicker.ImagePickerPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
+import com.rnfs.RNFSPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -29,11 +29,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFSPackage(),
-            new ReactNativePushNotificationPackage(),
+            new RNDeviceInfo(),
             new VectorIconsPackage(),
             new RNRSAPackage(),
-            new ImagePickerPackage()
+            new ReactNativePushNotificationPackage(),
+            new ImagePickerPackage(),
+            new RNFSPackage()
       );
     }
 

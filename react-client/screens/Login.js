@@ -1,20 +1,17 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components/native";
 import {
-  ScrollView,
-  AsyncStorage,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  ActivityIndicator,
-  ImageBackground,
-  Text,
-  View,
-  Keyboard
+  ScrollView,AsyncStorage,TouchableOpacity,
+  KeyboardAvoidingView,ActivityIndicator,
+  ImageBackground, Text,View, Keyboard
 } from "react-native";
 import LoginBg from "../assets/login.jpg";
 import IO from "socket.io-client/dist/socket.io";
 import icon from "react-native-vector-icons/Feather";
 import { RSA } from "react-native-rsa-native";
+import {getDeviceLocale} from "react-native-device-info";
+
+
 export const Touch = styled(TouchableOpacity)`
   width: 80%;
   padding: 10px;
@@ -122,7 +119,7 @@ export default class Login extends PureComponent {
     if (this.props.navigation.state.params) {
       this.socket = this.props.navigation.state.params.socket;
     } else {
-      this.socket = IO("http://192.168.0.166:5000");
+      this.socket = IO("http://192.168.0.86:5000");
     }
 
 
@@ -391,9 +388,6 @@ export default class Login extends PureComponent {
           </Touch>
           <Touch blue onPress={this.onRegister}>
             <BtnTxt >تسجيل حساب</BtnTxt>
-          </Touch>
-          <Touch blue onPress={async () => await AsyncStorage.clear()}>
-            <BtnTxt >Clear Storage</BtnTxt>
           </Touch>
         </Avoid>
         {this.state.generating === true ? (

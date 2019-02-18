@@ -162,7 +162,8 @@ export default class Rooms extends Component {
     if (socket !== null && socket !== undefined && keyPair !== null && keyPair !== undefined) {
       console.log("KeyPairMounted", this.state.keyPair.username);
       socket.on("rooms", rooms => {
-        this.setState({ rooms, refreshing: false });
+        console.log("Client received rooms")
+        this.setState({ rooms, refreshing: false }, () => console.log(rooms));
       });
       socket.on("userRequests", requests => {
         if (requests !== null && requests !== undefined) {
@@ -186,9 +187,9 @@ export default class Rooms extends Component {
       })
       socket.on("deletedUserRequest", async roomName => {
         let { userRequests } = this.state;
-        let reqIndex = await userRequests.findIndex(req => req.roomName === roomName);
+        let reqIndex = userRequests.findIndex(req => req.roomName === roomName);
         if (reqIndex !== -1) {
-          await userRequests.splice(reqIndex, 1);
+          userRequests.splice(reqIndex, 1);
           this.setState({
             handleRequest: false,
             request: { roomName: "", person: "" },
@@ -198,29 +199,33 @@ export default class Rooms extends Component {
           console.log("The Request doesn't Exist");
         }
       })
-      socket.on("Msg", payloads => {
+      socket.on("Msg", data => {
         let { keyPair, decrypted, rooms } = this.state;
-        console.log("received payload", payloads.length)
-        let payload = payloads.find(payload => payload.publicKey === keyPair.public_key)
+        let payload = data.to.find(payload => payload.publicKey === keyPair.public_key)
         if (payload !== undefined && payload !== null) {
-          let { msg, key, iv, from, publicKey, roomName } = payload;
           let now = new Date();
           let date = now.getDate() + "-" + now.getMonth() + 1 + "-" + now.getFullYear();
           let time = now.getHours() + ":" + now.getMinutes();
-          let chatIndex = decrypted.findIndex(room => room.roomName === roomName);
-          let roomIndex = rooms.findIndex(room => room.name === roomName);
-          RSA.decrypt(key, keyPair.private_key)
+          let chatIndex = decrypted.findIndex(room => room.roomName === data.roomName);
+          let roomIndex = rooms.findIndex(room => room.name === data.roomName);
+          RSA.decrypt(payload.key, keyPair.private_key)
             .then(decryptedKey => {
-              let dec = AES.decrypt(msg, decryptedKey,
-                { iv: iv, mode: mode.CBC, padding: pad.Pkcs7 })
+              let dec = AES.decrypt(data.msg, decryptedKey,
+                { iv: data.iv, mode: mode.CBC, padding: pad.Pkcs7 })
               let plainText = dec.toString(enc.Utf8);
               console.log(`Received Msg`, plainText)
               if (chatIndex !== -1) {
-                decrypted[chatIndex].chat.push({ msg: plainText, date, time, from })
+                decrypted[chatIndex].chat.push({ msg: plainText, date, time, from: data.from })
               } else {
-                decrypted.push({ roomName, chat: [{ msg: plainText, date, time, from }] });
+                decrypted.push({
+                  roomName: data.roomName,
+                  chat: [{ msg: plainText, date, time, from: data.from }]
+                });
               }
-              rooms[roomIndex].chat.push({ msg, createdAt: now, iv, from, to: [{ publicKey, key }] });
+              rooms[roomIndex].chat.push({
+                msg: data.msg, createdAt: now,
+                iv: data.iv, from: data.from, to: data.to
+              });
               this.setState({ decrypted, rooms });
             }).catch(err => console.log(err));
         } else {
@@ -232,26 +237,26 @@ export default class Rooms extends Component {
         // Destructor the Data
         let { person, roomName, id } = data;
         // find the room index
-        let roomIndex = await this.state.rooms.findIndex(room => room.name === roomName);
+        let roomIndex = this.state.rooms.findIndex(room => room.name === roomName);
         try {
           if (roomIndex !== -1) {
             // avoid mutation by copying the values into a new array
-            let rooms = await [...this.state.rooms];
-            rooms[roomIndex].requests = await [...this.state.rooms[roomIndex].requests];
-            let requests = await [...this.state.roomRequests];
+            let rooms = [...this.state.rooms];
+            rooms[roomIndex].requests = [...this.state.rooms[roomIndex].requests];
+            let requests = [...this.state.roomRequests];
             let reqIndex = requests.findIndex(req => req === person);
             if (reqIndex !== -1) {
-              await requests.splice(reqIndex, 1);
+              requests.splice(reqIndex, 1);
               // find the request index
               let requestIndex = rooms[roomIndex].requests.findIndex(req => req === person);
               if (requestIndex !== -1) {
                 console.log("Deleting The Request");
-                await rooms[roomIndex].requests.splice(requestIndex, 1);
+                rooms[roomIndex].requests.splice(requestIndex, 1);
                 console.log("Spliced The Requests");
                 if (id) {
-                  rooms[roomIndex].users = await [...this.state.rooms[roomIndex].users];
+                  rooms[roomIndex].users = [...this.state.rooms[roomIndex].users];
                   console.log("Pushing a user");
-                  await rooms[roomIndex].users.push(id);
+                  rooms[roomIndex].users.push(id);
                 }
                 this.setState({ rooms, roomRequests: requests, handleRequest: false });
               } else {
@@ -274,6 +279,7 @@ export default class Rooms extends Component {
       })
       socket.on("roomCreated", room => {
         let { rooms } = this.state;
+        console.log("Room has been created", room);
         if (rooms === null || rooms.length === 0) {
           setTimeout(() => {
             this.setState({
@@ -291,7 +297,6 @@ export default class Rooms extends Component {
             });
           }, 650);
         }
-        console.log("new group", room);
       });
     } else {
       console.log("Something is Null !!");
@@ -318,8 +323,8 @@ export default class Rooms extends Component {
     });
   };
 
-  getRoom = room => {
-    let { keyPair, decrypted, inRoom } = this.state;
+  getRoom = async room => {
+    let { keyPair, decrypted } = this.state;
     // Find Decrypted Room Chat if it exists
     let Index = decrypted.findIndex(obj => obj.roomName === room.name);
     if (room.chat.length !== 0 && room.chat !== undefined && room.chat !== null) {
@@ -328,17 +333,12 @@ export default class Rooms extends Component {
       let decryptedChat = [];
       room.chat.forEach((chat, i) => {
         // get time & date
-        console.log(`${i}:chat`);
         console.log("date:", chat.createdAt);
         let now = new Date(chat.createdAt);
         let date = now.getDate() + "-" + now.getMonth() + 1 + "-" + now.getFullYear();
         let time = now.getHours() + ":" + now.getMinutes();
         // find my personal payload to decrypt
-        let payload = chat.to.find(data => {
-          if (data !== undefined && data !== null) {
-            return data.publicKey === keyPair.public_key
-          }
-        })
+        let payload = chat.to.find(data => data.publicKey === keyPair.public_key);
         if (payload !== undefined && payload !== null) {
           // Decrypt the AES256 Key with the RSA private key
           RSA.decrypt(payload.key, keyPair.private_key)
@@ -353,9 +353,13 @@ export default class Rooms extends Component {
               } else {
                 decrypted.push({ roomName: room.name, chat: decryptedChat });
               }
+              if (decryptedChat.length === room.chat.length) {
+                this.setState({ inRoom: true, form: false, decrypted, room, decrypting: false }, () => {
+                  console.log("Room's Chat has been loaded")
+                });
+              }
             })
             .catch(err => console.log(err))
-          this.setState({ inRoom: true, form: false, decrypted, room, decrypting: false });
         } else {
           console.log("Payload is null");
           this.setState({ inRoom: true, form: false, decrypted, room, decrypting: false });
@@ -364,7 +368,7 @@ export default class Rooms extends Component {
     } else {
       this.setState({ inRoom: true, form: false, room, decrypted, roomRequests: room.requests });
     }
-  }
+  } // End of getRoom
 
   static navigationOptions = {
     header: null
@@ -397,19 +401,6 @@ export default class Rooms extends Component {
     }
   };
 
-
-  send = () => {
-    const { token, room } = this.state;
-    if (token !== null && token !== undefined && room !== null) {
-      // send a text message
-      if (this.state.typingMsg) {
-      } else {
-        // send image
-      }
-    } else {
-      console.log("Token doesn't exist");
-    }
-  };
 
   inviteToggle = () => {
     this.setState({ dropdown: false, invite: true });
@@ -509,7 +500,7 @@ export default class Rooms extends Component {
               this.state.rooms.map((room, i) => {
                 return (
                   <Room key={i} onPress={this.getRoom.bind(this, room)}>
-                    <GroupAv source={{ uri: this.state.image.uri }} />
+                    <GroupAv source={room.avatar} />
                     <RoomText>{room.name}</RoomText>
                     <RoomText
                       style={{ position: "absolute", right: 5, margin: 5 }}
@@ -540,6 +531,7 @@ export default class Rooms extends Component {
           leaveRoom={this.leaveRoom.bind(this)}
           username={this.state.username}
           roomName={this.state.room ? this.state.room.name : null}
+          roomAvatar={this.state.room ? this.state.room.avatar : null}
           roomLeader={this.state.room ? this.state.room.leader : null}
           inRoom={this.state.inRoom}
           inUserRequests={this.state.inUserRequests}

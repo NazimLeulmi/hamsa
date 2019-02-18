@@ -93,15 +93,11 @@ export default class Room extends Component {
     }
 
     componentDidMount() {
-        this.scrollView.scrollToEnd()
         this.props.socket.on("invited", () => {
             this.props.toggleForm();
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-
-    }
     componentWillUnmount() {
         // console.log(`Room {${this.props.decChat.roomName}} is UnMounting`);
     }
@@ -123,7 +119,7 @@ export default class Room extends Component {
         }
     }
     render() {
-        console.log("Rendering");
+        console.log("Rendering Room");
         let Chat;
         if (this.props.decChat) {
             Chat = this.props.decChat.chat.map((chat, i) => {
