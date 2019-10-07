@@ -8,6 +8,7 @@
    ✩ React Native user interface  
    ✩ React Native camera module integration  
 # Things I want to do
+   ✩ Mutter images uploading  
    ✩ Switch to a relational database  
    ✩ Refactor and divid the backend code   
    ✩ Add encrypted images and videos  
