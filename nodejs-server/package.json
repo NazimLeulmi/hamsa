@@ -46,7 +46,7 @@
     "helmet": "^3.14.0",
     "imagemin": "^5.3.1",
     "jsonwebtoken": "^8.3.0",
-    "mongoose": "^5.3.7",
+    "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
     "socket.io": "^2.1.1",
     "ursa": "^0.9.4",
