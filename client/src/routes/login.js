@@ -25,7 +25,7 @@ export const Input = styled(TextField)`
 export const Btn = styled(Button)`
   width:90%; height:56px;
   margin-top: 10px;
-  background-color:rgba(255,255,255,.35)
+  background-color:rgba(255,255,255,.35);
 `;
 export const Img = styled.img`
   width:125px;
