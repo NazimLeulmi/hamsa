@@ -15,10 +15,10 @@ db.once('open', function () {
 });
 // Database modelsa
 const UserSchema = new mongoose.Schema({
-  username: { type: String, max: 150, min: 5 },
-  password: { type: String, max: 150, min: 10 },
-  publicKey: { type: String, max: 150, min: 5 },
-  authToken: { type: String, max: 150, min: 5 },
+  name: { type: String, max: 150, min: 5,required:true },
+  password: { type: String, max: 150, min: 10,required:true},
+  publicKey: { type: String, max: 150, min: 5 ,required:true},
+  authToken: { type: String, max: 150, min: 5 ,required:false}
 })
 const UserModel = new mongoose.model("user", UserSchema);
 app.get('/', (req, res) => {
@@ -32,7 +32,6 @@ io.on('connection', (socket) => {
   ///////////////////////////////////////////////
   socket.on("validate", async function (data) {
     const { name, password, passwordc, answer, a, b } = data;
-    console.log(data);
     const { isValid, errors } = validateRegister(
       name, password, passwordc, answer, a, b
     )
@@ -51,15 +50,21 @@ io.on('connection', (socket) => {
   ///////////////////////////////////////////////
   ///// User Registeration : User Creation /////
   /////////////////////////////////////////////
-  socket.on("createUser", function (data) {
-    console.log("creating user");
-    const { publicKey } = data;
-    const text = "hello world";
-    const buffer = Buffer.from(text);
-    const cipherBuffer = publicEncrypt(publicKey, buffer);
-    const cipherText = cipherBuffer.toString("base64");
-    console.log(cipherText);
-    socket.emit("cipher", { cipherText })
+  socket.on("createUser", async function (data) {
+    console.log("Creating user");
+    const { name,password,publicKey } = data;
+    try{
+      const genSalt = require("bcryptjs").genSalt;
+      const genHash = require("bcryptjs").hash;
+      const salt = await genSalt(10);
+      const hash = await genHash(password,salt)
+      const user = new UserModel({name,password:hash,publicKey});
+      const savedUser = await user.save();
+      console.log(`${name} has been registered`,savedUser);
+      socket.emit("registered");
+    }catch(err){
+      console.log(err);
+    }
   })
   socket.on('disconnect', () => {
     console.log("socket disconnected:", socket.id)

@@ -7,7 +7,7 @@ import { validateRegister } from "./validation";
 import { SocketContext } from "../context";
 import Alert from '@material-ui/lab/Alert';
 import { CircularProgress as Spinner } from '@material-ui/core';
-
+import { Redirect } from "react-router-dom";
 function rand(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -18,6 +18,7 @@ function Register(props) {
   const [password, setPassword] = useState("");
   const [passwordc, setPasswordc] = useState("");
   const [loading, setLoading] = useState(false);
+  const [registered, setRegistered] = useState(false);
   const [errors, setErrors] = useState([]);
   // Antispam question
   const [a] = useState(rand(1, 10));
@@ -32,7 +33,7 @@ function Register(props) {
   const [socket] = useContext(SocketContext);
   // Component has been mounted
   useEffect(() => {
-    socket.on("validated", async (data) => {
+    socket.on("validated", async function(data){
       console.log(`${password} has been validated`)
       const { isValid, errors } = data;
       // errors coming from the server
@@ -66,11 +67,16 @@ function Register(props) {
         keyPairsStore.put({ name: name, public: pubKeyPem, private: keyPair.privateKey})
         keyPairsStore.transaction.oncomplete = (event) => {
           db.close();
+          socket.emit("createUser",{name,password,publicKey:pubKeyPem});
         }
       }
     })
+    socket.on("registered",function(data){
+      setRegistered(true);
+    })
     return function () {
-      socket.off("validated")
+      socket.off("validated");
+      socket.off("registered");
     }
   })
   function submitForm(e) {
@@ -175,6 +181,7 @@ function Register(props) {
             {alert}
           </Alert>
         </Snackbar>
+        {registered?<Redirect to="/"/>:null}
       </Form>
     </StylesProvider>
   )
