@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { Link as lnk } from "react-router-dom";
-import { TextField, Button, Typography } from "@material-ui/core";
+import React, { useState, useEffect, useContext } from 'react';
+import styled from 'styled-components';
+import { Link as lnk } from 'react-router-dom';
+import { TextField, Button, Typography } from '@material-ui/core';
 import { StylesProvider } from '@material-ui/core/styles';
-import Image from "../assets/whisper.png";
+import { validateLogin } from './validation';
+import { SocketContext } from '../context';
+import Image from '../assets/whisper.png';
 
 export const Form = styled.form`
   display:flex; flex-direction:column;
@@ -39,14 +41,30 @@ export const Link = styled(lnk)`
 
 
 function LoginPage(props) {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  /* const [socket] = useContext(SocketContext); */
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [socket] = useContext(SocketContext);
+
+  useEffect(function () {
+    socket.on('authenticated');
+    return function () {
+      socket.off('authenticated')
+    }
+  }, []);
+  function submitForm() {
+    // client validation
+    const { errors, isValid } = validateLogin(name, password);
+    if (isValid === false && errors.length !== 0) {
+      console.log(errors);
+      return;
+    }
+    socket.emit('login', { name, password })
+  }
 
   function handleChange(e) {
-    if (e.target.name === "password") {
+    if (e.target.name === 'password') {
       setPassword(e.target.value)
-    } else if (e.target.name === "name") {
+    } else if (e.target.name === 'name') {
       setName(e.target.value)
     }
   }
@@ -54,20 +72,21 @@ function LoginPage(props) {
   return (
     <StylesProvider injectFirst>
       <Form>
-        <Header variant="h2" align="center">Hamsa</Header>
+        <Header variant='h2' align='center'>Hamsa</Header>
         <Img src={Image} />
         <Input
-          variant="filled" label="Name"
-          name="name" value={name} onChange={handleChange}
-          placeholder="Name"
+          variant='filled' label='Name'
+          name='name' value={name} onChange={handleChange}
+          placeholder='Name' type='text'
         />
         <Input
-          variant="filled" label="Password"
-          name="password" value={password} onChange={handleChange}
-          placeholder="Password"
+          variant='filled' label='Password'
+          name='password' value={password} onChange={handleChange}
+          placeholder='Password' type='password'
         />
-        <Btn children={"LOGIN"} variant="contained" />
-        <Link to="/register">Don't have an account ? REGISTER NOW</Link>
+        <Btn children={'LOGIN'} variant='contained' onClick={submitForm} />
+        <Btn children={'CHECK'} variant='contained' onClick={() => socket.emit('authCheck')} />
+        <Link to='/register'>Don't have an account ? REGISTER NOW</Link>
       </Form>
     </StylesProvider>
   )

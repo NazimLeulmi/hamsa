@@ -1,22 +1,24 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from 'react';
 import { StylesProvider } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
-import Image from "../assets/whisper.png";
-import { Form, Header, Input, Btn, Img, Link} from "./login";
-import { validateRegister } from "./validation";
-import { SocketContext } from "../context";
+import Image from '../assets/whisper.png';
+import { Form, Header, Input, Btn, Img, Link } from './login';
+import { validateRegister } from './validation';
+import { SocketContext } from '../context';
 import Alert from '@material-ui/lab/Alert';
 import { CircularProgress as Spinner } from '@material-ui/core';
-import { Redirect } from "react-router-dom";
+import { Redirect } from 'react-router-dom';
+import axios from "axios";
+
 function rand(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
 }
 function Register(props) {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordc, setPasswordc] = useState("");
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordc, setPasswordc] = useState('');
   const [loading, setLoading] = useState(false);
   const [registered, setRegistered] = useState(false);
   const [errors, setErrors] = useState([]);
@@ -27,13 +29,13 @@ function Register(props) {
   const [answer, setAnswer] = useState('');
   // Custom alert state
   const [open, setOpen] = useState(false);
-  const [alert, setAlert] = useState("");
-  const [severity, setSeverity] = useState("error");
+  const [alert, setAlert] = useState('');
+  const [severity, setSeverity] = useState('error');
   // Websocket connection from the context
   const [socket] = useContext(SocketContext);
   // Component has been mounted
   useEffect(() => {
-    socket.on("validated", async function(data){
+    socket.on('validated', async function (data) {
       console.log(`${password} has been validated`)
       const { isValid, errors } = data;
       // errors coming from the server
@@ -41,7 +43,7 @@ function Register(props) {
       if (isValid === false) {
         // alert the user
         setAlert(errors[0]);
-        setSeverity("error");
+        setSeverity('error');
         setOpen(true);
         setLoading(false);
         return;
@@ -49,37 +51,38 @@ function Register(props) {
       const keyPair = await genKeyPair();
       const pubKeyPem = await exportPubKey(keyPair.publicKey);
       const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-      const request = indexedDB.open("hamsaDB", 1);
+      const request = indexedDB.open('hamsaDB', 1);
       request.onerror = function (event) {
-        console.log("Request Error", event.target.errorCode);
+        console.log('Request Error', event.target.errorCode);
       };
       request.onupgradeneeded = function (event) {
         const db = request.result;
-        db.createObjectStore("keyPairs", { keyPath: "name" });
-        console.log("IndexeDB store has been created");
+        db.createObjectStore('keyPairs', { keyPath: 'name' });
+        console.log('IndexeDB store has been created');
       }
       request.onsuccess = (event) => {
         const db = request.result;
-        const keyPairsStore = db.transaction("keyPairs", "readwrite").objectStore("keyPairs");
+        const keyPairsStore = db.transaction('keyPairs', 'readwrite').objectStore('keyPairs');
         db.onerror = function (event) {
-          console.log("DB transaction error", event.target.errorCode);
+          console.log('DB transaction error', event.target.errorCode);
         }
-        keyPairsStore.put({ name: name, public: pubKeyPem, private: keyPair.privateKey})
+        keyPairsStore.put({ name: name, public: pubKeyPem, private: keyPair.privateKey })
         keyPairsStore.transaction.oncomplete = (event) => {
           db.close();
-          socket.emit("createUser",{name,password,publicKey:pubKeyPem});
+          socket.emit('createUser', { name, password, publicKey: pubKeyPem });
         }
       }
     })
-    socket.on("registered",function(data){
+    socket.on('registered', function (data) {
       setRegistered(true);
     })
     return function () {
-      socket.off("validated");
-      socket.off("registered");
+      socket.off('validated');
+      socket.off('registered');
     }
   })
   function submitForm(e) {
+    console.log("submiting the form");
     e.preventDefault();
     const { isValid, errors } = validateRegister(name, password, passwordc, answer, a, b);
     setLoading(true);
@@ -87,12 +90,24 @@ function Register(props) {
     setErrors(errors);
     if (isValid === false) {
       setAlert(errors[0]);
-      setSeverity("error");
+      setSeverity('error');
       setOpen(true)
       setLoading(false);
       return;
     }
-    socket.emit("validate", { name, password, passwordc, answer, a, b })
+    axios.post('http://192.168.1.74:3001/validate', { name, password, passwordc, answer, a, b },
+      {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
   function handleClose(e, reason) {
     if (reason === 'clickaway') {
@@ -102,20 +117,20 @@ function Register(props) {
   };
   function handleChange(e) {
     switch (e.target.name) {
-      case "name":
+      case 'name':
         setName(e.target.value);
         break;
-      case "password":
+      case 'password':
         setPassword(e.target.value);
         break;
-      case "passwordc":
+      case 'passwordc':
         setPasswordc(e.target.value);
         break;
-      case "answer":
+      case 'answer':
         setAnswer(e.target.value);
         break;
       default:
-        console.log("Something went wrong!")
+        console.log('Something went wrong!')
         break;
     }
   }
@@ -123,19 +138,19 @@ function Register(props) {
   function genKeyPair() {
     return window.crypto.subtle.generateKey(
       {
-        name: "RSA-OAEP",
+        name: 'RSA-OAEP',
         modulusLength: 4096, //can be 1024, 2048, or 4096
         publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-        hash: { name: "SHA-256" }, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+        hash: { name: 'SHA-256' }, //can be 'SHA-1', 'SHA-256', 'SHA-384', or 'SHA-512'
       },
       false, // set extractable:false to prevent xss to access the private key
-      ["encrypt", "decrypt"]
+      ['encrypt', 'decrypt']
     );
   }
   // Export the public RSA encryption key as a PEM string 
   async function exportPubKey(key) {
     const buffer = await window.crypto.subtle.exportKey(
-      "spki",
+      'spki',
       key
     );
     const string = String.fromCharCode.apply(null, new Uint8Array(buffer));
@@ -146,42 +161,42 @@ function Register(props) {
   return (
     <StylesProvider injectFirst>
       <Form>
-        <Header variant="h2" align="center">Hamsa</Header>
+        <Header variant='h2' align='center'>Hamsa</Header>
         <Img src={Image} />
         <Input
-          variant="filled" label="Name"
-          name="name" value={name} onChange={handleChange}
-          placeholder="Name"
+          variant='filled' label='Name'
+          name='name' value={name} onChange={handleChange}
+          placeholder='Name'
         />
         <Input
-          variant="filled" label="Password"
-          name="password" value={password} onChange={handleChange}
-          placeholder="Password"
+          variant='filled' label='Password'
+          name='password' value={password} onChange={handleChange}
+          placeholder='Password'
         />
         <Input
-          variant="filled" label="Password confirmation"
-          name="passwordc" value={passwordc} onChange={handleChange}
-          placeholder="Password confirmation"
+          variant='filled' label='Password confirmation'
+          name='passwordc' value={passwordc} onChange={handleChange}
+          placeholder='Password confirmation'
         />
         <Input
-          variant="filled" label={`${a} + ${b} = ?`}
-          name="answer" value={answer} onChange={handleChange}
+          variant='filled' label={`${a} + ${b} = ?`}
+          name='answer' value={answer} onChange={handleChange}
           placeholder={`${a} + ${b} = ?`}
         />
-        <Btn 
-          children={"REGISTER"} 
-          variant="contained" 
-          onClick={submitForm} 
-          startIcon={loading?<Spinner size={20} style={{marginRight:10}}/>:null}
-          disabled={loading?true:false}
+        <Btn
+          children={'REGISTER'}
+          variant='contained'
+          onClick={submitForm}
+          startIcon={loading ? <Spinner size={20} style={{ marginRight: 10 }} /> : null}
+          disabled={loading ? true : false}
         />
-        <Link to="/">Already have an account ? LOGIN NOW</Link>
+        <Link to='/'>Already have an account ? LOGIN NOW</Link>
         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity={severity} style={{ textAlign: "center", alignItems: "center" }}>
+          <Alert onClose={handleClose} severity={severity} style={{ textAlign: 'center', alignItems: 'center' }}>
             {alert}
           </Alert>
         </Snackbar>
-        {registered?<Redirect to="/"/>:null}
+        {registered ? <Redirect to='/' /> : null}
       </Form>
     </StylesProvider>
   )
