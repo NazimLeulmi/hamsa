@@ -3,11 +3,14 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const mongoose = require('mongoose');
 const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
-const validateRegister = require('./validation').validateRegister;
-const publicEncrypt = require('crypto').publicEncrypt;
 const bodyParser = require('body-parser');
-const cors = require('cors');
+const MongoStore = require('connect-mongo')(session);
+const regValidation = require('./validation').regValidation;
+const loginValidation = require('./validation').loginValidation;
+const publicEncrypt = require('crypto').publicEncrypt;
+const genSalt = require('bcryptjs').genSalt;
+const genHash = require('bcryptjs').hash;
+const compare = require('bcryptjs').compare;
 
 //////////////////////////////////////////////
 ///// Database: MongoDB connection /////////
@@ -24,16 +27,21 @@ db.once('open', function () {
 ////////////////////////////////////////////
 const UserSchema = new mongoose.Schema({
   name: { type: String, max: 150, min: 5, required: true },
-  password: { type: String, max: 150, min: 10, required: true },
-  publicKey: { type: String, max: 150, min: 5, required: true },
-  authToken: { type: String, max: 150, min: 5, required: false }
+  password: { type: String, max: 60, min: 60, required: true },
+  publicKey: { type: String, max: 786, min: 786, required: true },
 })
 const UserModel = new mongoose.model("user", UserSchema);
+const RoomSchema = new mongoose.Schema({
+  name: { type: String, max: 85, min: 5, required: true },
+  admin: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+  users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true }],
+  chat: [{ type: mongoose.Schema.Types.ObjectId, ref: 'message' }]
+});
+const RoomModel = new mongoose.model("room", RoomSchema);
 //////////////////////////////////////////////////
 ///// User Authorization: express-session ///////
 ////////////////////////////////////////////////
 // enable same-origin requests
-app.use(cors());
 app.use(session({
   name: "hamsa",
   secret: "my-secret",
@@ -43,26 +51,23 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 12, // 12 hours
     httpOnly: true,
-    // sameSite: true, // strict
+    sameSite: true, // strict
     secure: false,
   }
 }));
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json());
 /////////////////////////////////////////////////////
 ///// User Registeration : Data Validation /////////
 ///////////////////////////////////////////////////
 app.post("/validate", async function (req, res) {
   console.log("Validating form data");
-  const { name, password, passwordc, answer, a, b } = data;
-  const { isValid, errors } = validateRegister(
-    name, password, passwordc, answer, a, b
-  )
+  const { name, password, passwordc, answer, a, b } = req.body;
+  const { isValid, errors } = regValidation(name, password, passwordc, answer, a, b);
   if (isValid == false) {
-    socket.emit("validated", { errors, isValid })
     return res.json({ errors, isValid: false });
   }
-  const user = await UserModel.findOne({ name: data.name })
+  const user = await UserModel.findOne({ name })
   if (user) {
     return res.json({
       errors: ["The username has already been taken"],
@@ -70,8 +75,6 @@ app.post("/validate", async function (req, res) {
     });
 
   }
-  res.header("Access-Control-Allow-Origin", "http://192.168.1.74:3000"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   return res.json({ errors: [], isValid: true });
 })
 ///////////////////////////////////////////////
@@ -79,10 +82,8 @@ app.post("/validate", async function (req, res) {
 /////////////////////////////////////////////
 app.post("/register", async function (req, res) {
   console.log("Creating user");
-  const { name, password, publicKey } = data;
+  const { name, password, publicKey } = req.body;
   try {
-    const genSalt = require("bcryptjs").genSalt;
-    const genHash = require("bcryptjs").hash;
     const salt = await genSalt(10);
     const hash = await genHash(password, salt)
     const user = new UserModel({ name, password: hash, publicKey });
@@ -99,8 +100,8 @@ app.post("/register", async function (req, res) {
 /////////////////////////////////////////////
 app.post('/login', async function (req, res) {
   console.log('User Logging In');
-  req.session.userData = { name: req.body.name };
-  return res.json({ authenticated: false });
+  const { name, password } = req.body;
+  const { isValid, errors } = loginValidation(name, password);
 });
 ///////////////////////////////////////////////
 /////  User Login : Check Authentication  ////

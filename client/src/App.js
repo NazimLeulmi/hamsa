@@ -5,17 +5,23 @@ import SocketContextProvider from "./context";
 
 const Register = lazy(() => import('./routes/register'));
 const Login = lazy(() => import('./routes/login'));
+const Contacts = lazy(() => import('./routes/contacts'));
+const Rooms = lazy(() => import('./routes/rooms'));
+const Notifications = lazy(() => import('./routes/notifications'));
 
 function App() {
   return (
     <Router>
       <Suspense fallback={<div>Loading...</div>}>
-        <SocketContextProvider>
-          <Switch>
-            <Route exact path="/" component={Login} />
-            <Route exact path="/register" component={Register} />
-          </Switch>
-        </SocketContextProvider>
+        <Switch>
+          <Route exact path="/" component={Login} />
+          <Route exact path="/register" component={Register} />
+          <SocketContextProvider>
+            <Route exact path="/rooms" component={Rooms} />
+            <Route exact path="/contacts" component={Contacts} />
+            <Route exact path="/notifications" component={Notifications} />
+          </SocketContextProvider>
+        </Switch>
       </Suspense>
     </Router>
   )

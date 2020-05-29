@@ -1,25 +1,59 @@
-function validateRegister(name, password, passwordc, answer, a, b) {
-  const errors = [];
-  if (name === "" || name === undefined || name === null) {
-    errors.push("The name is required");
-  } else if (name.length > 150 || name.length < 5) {
-    errors.push("The name has to be (5 ~ 150) characters")
-  }
-  if (password === "" || password === undefined || password === null) {
-    errors.push("The password is required");
-  } else if (password.length > 150 || password.length < 10) {
-    errors.push("The password has to be (10 ~ 150) characters")
-  }
-  if (password !== null && password !== "" && password !== passwordc) {
-    errors.push("The two passwords have to match")
-  }
+const v = require('validator');
 
-  if (answer === "" || answer === undefined || answer === null) {
-    errors.push("You have to answer the question");
-  } else if (a + b !== parseInt(answer)) {
-    errors.push("Incorrect answer")
+function regValidation(name, password, passwordc, answer, a, b) {
+  const errors = [];
+  ////////////////////////////////
+  ///// Name Validation /////////
+  //////////////////////////////
+  if (v.isEmpty(name)) {
+    errors.push("The name is required");
+  }
+  else if (v.isAlphanumeric(name) === false) {
+    errors.push('The name must contain numbers and letters only')
+  }
+  else if (v.isLength(name, { min: 3, max: 150 }) === false) {
+    errors.push('The name has to be (3 ~ 150) characters')
+  }
+  /////////////////////////////////////
+  /////// Password Validation ////////
+  ///////////////////////////////////
+  if (v.isEmpty(password)) {
+    errors.push("The password is required");
+  }
+  else if (v.isLength(password, { min: 10, max: 150 }) === false) {
+    errors.push('The password has to be (10 ~ 150) characters')
+  } else if (v.equals(password, passwordc) === false) {
+    errors.push("the password confirmation doesn't match");
+  }
+  /////////////////////////////////////
+  /////// Antispam Validation ////////
+  ///////////////////////////////////
+  if (v.isEmpty(answer)) {
+    errors.push("The question must be answered");
+  }
+  else if (v.isInt(`${a}`) === false || v.isInt(`${b}`) === false || v.isInt(answer) === false) {
+    errors.push('The answer must be an integer')
+  }
+  else if (a + b !== parseInt(answer)) {
+    errors.push('Incorrect answer')
+  }
+  return { isValid: errors.length === 0, errors }
+}
+function loginValidation(name, password) {
+  const errors = [];
+  ////////////////////////////////
+  ///// Name Validation /////////
+  //////////////////////////////
+  if (v.isEmpty(name)) {
+    errors.push("The name is required");
+  }
+  else if (v.isAlphanumeric(name) === false) {
+    errors.push('The name must contain numbers and letters only')
+  }
+  if (v.isEmpty(password)) {
+    errors.push("The password is required");
   }
   return { isValid: errors.length === 0, errors }
 }
 
-module.exports = { validateRegister }
+module.exports = { loginValidation, regValidation }

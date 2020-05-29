@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link as lnk } from 'react-router-dom';
 import { TextField, Button, Typography } from '@material-ui/core';
 import { StylesProvider } from '@material-ui/core/styles';
-import { validateLogin } from './validation';
-import { SocketContext } from '../context';
 import Image from '../assets/whisper.png';
+import axios from "axios";
 
 export const Form = styled.form`
   display:flex; flex-direction:column;
@@ -43,23 +42,6 @@ export const Link = styled(lnk)`
 function LoginPage(props) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [socket] = useContext(SocketContext);
-
-  useEffect(function () {
-    socket.on('authenticated');
-    return function () {
-      socket.off('authenticated')
-    }
-  }, []);
-  function submitForm() {
-    // client validation
-    const { errors, isValid } = validateLogin(name, password);
-    if (isValid === false && errors.length !== 0) {
-      console.log(errors);
-      return;
-    }
-    socket.emit('login', { name, password })
-  }
 
   function handleChange(e) {
     if (e.target.name === 'password') {
@@ -68,6 +50,25 @@ function LoginPage(props) {
       setName(e.target.value)
     }
   }
+
+  function checkAuth(e) {
+    axios.get('/checkAuth')
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(err => console.log(err))
+  }
+  function submitForm() {
+    // client validation
+    axios.post('/login', { name, password })
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(err => console.log(err));
+  }
+
+
+
 
   return (
     <StylesProvider injectFirst>
@@ -85,7 +86,7 @@ function LoginPage(props) {
           placeholder='Password' type='password'
         />
         <Btn children={'LOGIN'} variant='contained' onClick={submitForm} />
-        <Btn children={'CHECK'} variant='contained' onClick={() => socket.emit('authCheck')} />
+        <Btn children={'CHECK'} variant='contained' onClick={checkAuth} />
         <Link to='/register'>Don't have an account ? REGISTER NOW</Link>
       </Form>
     </StylesProvider>

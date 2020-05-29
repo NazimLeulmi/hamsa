@@ -3,12 +3,12 @@ import { StylesProvider } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import Image from '../assets/whisper.png';
 import { Form, Header, Input, Btn, Img, Link } from './login';
-import { validateRegister } from './validation';
 import { SocketContext } from '../context';
 import Alert from '@material-ui/lab/Alert';
 import { CircularProgress as Spinner } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import axios from "axios";
+axios.defaults.withCredentials = true;
 
 function rand(min, max) {
   min = Math.ceil(min);
@@ -32,78 +32,57 @@ function Register(props) {
   const [alert, setAlert] = useState('');
   const [severity, setSeverity] = useState('error');
   // Websocket connection from the context
-  const [socket] = useContext(SocketContext);
   // Component has been mounted
-  useEffect(() => {
-    socket.on('validated', async function (data) {
-      console.log(`${password} has been validated`)
-      const { isValid, errors } = data;
-      // errors coming from the server
-      setErrors(errors);
-      if (isValid === false) {
-        // alert the user
-        setAlert(errors[0]);
-        setSeverity('error');
-        setOpen(true);
-        setLoading(false);
-        return;
-      }
-      const keyPair = await genKeyPair();
-      const pubKeyPem = await exportPubKey(keyPair.publicKey);
-      const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-      const request = indexedDB.open('hamsaDB', 1);
-      request.onerror = function (event) {
-        console.log('Request Error', event.target.errorCode);
-      };
-      request.onupgradeneeded = function (event) {
-        const db = request.result;
-        db.createObjectStore('keyPairs', { keyPath: 'name' });
-        console.log('IndexeDB store has been created');
-      }
-      request.onsuccess = (event) => {
-        const db = request.result;
-        const keyPairsStore = db.transaction('keyPairs', 'readwrite').objectStore('keyPairs');
-        db.onerror = function (event) {
-          console.log('DB transaction error', event.target.errorCode);
-        }
-        keyPairsStore.put({ name: name, public: pubKeyPem, private: keyPair.privateKey })
-        keyPairsStore.transaction.oncomplete = (event) => {
-          db.close();
-          socket.emit('createUser', { name, password, publicKey: pubKeyPem });
-        }
-      }
-    })
-    socket.on('registered', function (data) {
-      setRegistered(true);
-    })
-    return function () {
-      socket.off('validated');
-      socket.off('registered');
-    }
-  })
+
   function submitForm(e) {
     console.log("submiting the form");
     e.preventDefault();
-    const { isValid, errors } = validateRegister(name, password, passwordc, answer, a, b);
     setLoading(true);
-    setOpen(false);
-    setErrors(errors);
-    if (isValid === false) {
-      setAlert(errors[0]);
-      setSeverity('error');
-      setOpen(true)
-      setLoading(false);
-      return;
-    }
-    axios.post('http://192.168.1.74:3001/validate', { name, password, passwordc, answer, a, b },
-      {
-        withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
-      })
-      .then(function (response) {
-        console.log(response);
+    axios.post('/validate', { name, password, passwordc, answer, a, b })
+      .then(async function (response) {
+        if (response.data.isValid === false) {
+          setErrors(response.data.errors);
+          setAlert(response.data.errors[0]);
+          setSeverity('error');
+          setOpen(true)
+          setLoading(false);
+          return;
+        }
+        const keyPair = await genKeyPair();
+        const pubKeyPem = await exportPubKey(keyPair.publicKey);
+        const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+        const request = indexedDB.open('hamsaDB', 1);
+        request.onerror = function (event) {
+          console.log('Request Error', event.target.errorCode);
+        };
+        request.onupgradeneeded = function (event) {
+          const db = request.result;
+          db.createObjectStore('keyPairs', { keyPath: 'name' });
+          console.log('IndexeDB store has been created');
+        }
+        request.onsuccess = (event) => {
+          const db = request.result;
+          const keyPairsStore = db.transaction('keyPairs', 'readwrite').objectStore('keyPairs');
+          db.onerror = function (event) {
+            console.log('DB transaction error', event.target.errorCode);
+          }
+          keyPairsStore.put({ name: name, public: pubKeyPem, private: keyPair.privateKey })
+          keyPairsStore.transaction.oncomplete = (event) => {
+            db.close();
+            axios.post('/register', { name, password, publicKey: pubKeyPem })
+              .then(function (response) {
+                if (response.data.registered === true) {
+                  setErrors([]);
+                  setAlert('You have been registered');
+                  setSeverity('success');
+                  setOpen(true)
+                  setLoading(false);
+                  setTimeout(() => setRegistered(true), 1500);
+                }
+              })
+              .catch(err => console.log(err))
+          }
+        }
       })
       .catch(function (error) {
         console.log(error);
