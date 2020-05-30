@@ -126,9 +126,8 @@ app.post('/login', async function (req, res) {
 /////////////////////////////////////////////
 app.get('/checkAuth', async function (req, res) {
   console.log('User Logging In');
-  console.log(req.session, "session");
   if (req.session.userData && req.session.userData.name) {
-    return res.json({ auth: true });
+    return res.json({ auth: true, user: req.session.userData.name });
   }
   return res.json({ auth: false });
 });

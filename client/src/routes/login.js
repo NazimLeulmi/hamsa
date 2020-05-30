@@ -4,10 +4,10 @@ import { Link as lnk } from 'react-router-dom';
 import { TextField, Button, Typography } from '@material-ui/core';
 import { StylesProvider } from '@material-ui/core/styles';
 import { SocketContext } from "../context";
+import { Redirect } from "react-router-dom";
 import Alert from '@material-ui/lab/Alert';
 import Image from '../assets/whisper.png';
 import axios from "axios";
-import { Redirect } from "react-router-dom";
 axios.defaults.withCredentials = true;
 
 export const Form = styled.form`
@@ -47,11 +47,10 @@ function LoginPage(props) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState([]);
-  const { auth, setAuth } = useContext(SocketContext);
+  const { user, setUser } = useContext(SocketContext);
 
 
   useEffect(function () {
-    console.log(auth, "auth")
     checkAuth();
   }, [])
 
@@ -66,7 +65,12 @@ function LoginPage(props) {
     console.log("Checking Auth");
     axios.get('/checkAuth')
       .then(function (response) {
-        console.log(response.data);
+        if (response.data.auth === true) {
+          setUser(response.data.user);
+          return;
+        } else {
+          setUser(null);
+        }
       })
       .catch(err => console.log(err))
   }
@@ -79,7 +83,7 @@ function LoginPage(props) {
           return;
         }
         setErrors([])
-        setAuth(true);
+        setUser(name);
       })
       .catch(err => console.log(err));
   }
@@ -109,7 +113,7 @@ function LoginPage(props) {
             {errors[0]}
           </Alert>
         }
-        {auth ? <Redirect to="/" /> : null}
+        {user ? <Redirect to="/rooms" /> : null}
       </Form>
     </StylesProvider>
   )

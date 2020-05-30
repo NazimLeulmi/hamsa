@@ -23,7 +23,7 @@ function Contacts(props) {
   const [nameErrors, setNameErrors] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { auth } = useContext(SocketContext);
+  const { user } = useContext(SocketContext);
 
   function openDialog() {
     setOpen(true);
@@ -44,7 +44,6 @@ function Contacts(props) {
   }
   // Get all contacts from the server
   useEffect(function () {
-    console.log("authe", auth)
   }, []);
   return (
     <Container>
@@ -66,7 +65,7 @@ function Contacts(props) {
         <AddIcon />
       </Fab>
       <MobileNav />
-      {auth ? null : <Redirect to="/" />}
+      {user ? null : <Redirect to="/" />}
     </Container>
   );
 }
