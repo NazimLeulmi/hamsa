@@ -56,4 +56,15 @@ function loginValidation(name, password) {
   return { isValid: errors.length === 0, errors }
 }
 
-module.exports = { loginValidation, regValidation }
+function addContactValidation(name) {
+  const errors = [];
+  if (v.isEmpty(name)) {
+    errors.push("The name is required");
+  }
+  else if (v.isAlphanumeric(name) === false) {
+    errors.push('The name must be alphanumeric')
+  }
+  return { isValid: errors.length === 0, errors }
+}
+
+module.exports = { loginValidation, regValidation, addContactValidation }

@@ -12,7 +12,7 @@ import { SocketContext } from "../context";
 
 
 export default function MobileNavigation() {
-  const [socket, setSocket, auth, setAuth, route, setRoute] = useContext(SocketContext);
+  const { route, setRoute } = useContext(SocketContext);
 
   const handleChange = (event, newValue) => {
     setRoute(newValue);

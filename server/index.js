@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const MongoStore = require('connect-mongo')(session);
 const regValidation = require('./validation').regValidation;
 const loginValidation = require('./validation').loginValidation;
+const addContactValidation = require('./validation').addContactValidation;
 const publicEncrypt = require('crypto').publicEncrypt;
 const genSalt = require('bcryptjs').genSalt;
 const genHash = require('bcryptjs').hash;
@@ -29,15 +30,17 @@ const UserSchema = new mongoose.Schema({
   name: { type: String, max: 150, min: 5, required: true },
   password: { type: String, max: 60, min: 60, required: true },
   publicKey: { type: String, max: 786, min: 786, required: true },
+  contacts: [{ type: String, max: 150, min: 5, ref: 'user' }],
+  groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
 })
 const UserModel = new mongoose.model("user", UserSchema);
-const RoomSchema = new mongoose.Schema({
+const GroupSchema = new mongoose.Schema({
   name: { type: String, max: 85, min: 5, required: true },
-  admin: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+  admin: { type: String, max: 150, min: 5, required: true },
   users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true }],
-  chat: [{ type: mongoose.Schema.Types.ObjectId, ref: 'message' }]
+  chat: [{ type: mongoose.Schema.Types.ObjectId, ref: 'message' }],
 });
-const RoomModel = new mongoose.model("room", RoomSchema);
+const GroupModel = new mongoose.model("group", GroupSchema);
 //////////////////////////////////////////////////
 ///// User Authorization: express-session ///////
 ////////////////////////////////////////////////
@@ -73,7 +76,6 @@ app.post("/validate", async function (req, res) {
       errors: ["The username has already been taken"],
       isValid: true
     });
-
   }
   return res.json({ errors: [], isValid: true });
 })
@@ -101,7 +103,23 @@ app.post("/register", async function (req, res) {
 app.post('/login', async function (req, res) {
   console.log('User Logging In');
   const { name, password } = req.body;
+  console.log(name, password, "data")
   const { isValid, errors } = loginValidation(name, password);
+  if (isValid === false) {
+    return res.json({ isValid: false, errors });
+  }
+  const user = await UserModel.findOne({ name });
+  if (!user) return res.json({
+    isValid: false,
+    errors: ["The name or password is incorrect"]
+  });
+  const isCorrect = compare(password, user.password);
+  if (isCorrect === false) return res.json({
+    isValid: false,
+    errors: ["The name or password is incorrect"]
+  });
+  req.session.userData = { name: user.name };
+  return res.json({ isValid: true, errors: [], name: user.name })
 });
 ///////////////////////////////////////////////
 /////  User Login : Check Authentication  ////
@@ -109,10 +127,23 @@ app.post('/login', async function (req, res) {
 app.get('/checkAuth', async function (req, res) {
   console.log('User Logging In');
   console.log(req.session, "session");
-  if (req.session.userData.name) {
+  if (req.session.userData && req.session.userData.name) {
     return res.json({ auth: true });
   }
   return res.json({ auth: false });
+});
+/////////////////////////////////////////////
+///// Add a contact (Send a request)   /////
+///////////////////////////////////////////
+app.post('/addContact', async function (req, res) {
+  if (!req.session.userData) {
+    return res.json({ isValid: false, errors: ["You must be logged in"] });
+  }
+  const { name } = req.body;
+  const { isValid, errors } = addContactValidation(name);
+  if (isValid === false) {
+    return res.json({ isValid: false, errors });
+  }
 });
 io.origins('*:*') // for latest version
 io.on('connection', (socket) => {

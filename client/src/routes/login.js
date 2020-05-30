@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { Link as lnk } from 'react-router-dom';
 import { TextField, Button, Typography } from '@material-ui/core';
 import { StylesProvider } from '@material-ui/core/styles';
+import { SocketContext } from "../context";
+import Alert from '@material-ui/lab/Alert';
 import Image from '../assets/whisper.png';
 import axios from "axios";
+import { Redirect } from "react-router-dom";
+axios.defaults.withCredentials = true;
 
 export const Form = styled.form`
   display:flex; flex-direction:column;
@@ -42,6 +46,14 @@ export const Link = styled(lnk)`
 function LoginPage(props) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState([]);
+  const { auth, setAuth } = useContext(SocketContext);
+
+
+  useEffect(function () {
+    console.log(auth, "auth")
+    checkAuth();
+  }, [])
 
   function handleChange(e) {
     if (e.target.name === 'password') {
@@ -50,8 +62,8 @@ function LoginPage(props) {
       setName(e.target.value)
     }
   }
-
   function checkAuth(e) {
+    console.log("Checking Auth");
     axios.get('/checkAuth')
       .then(function (response) {
         console.log(response.data);
@@ -62,12 +74,15 @@ function LoginPage(props) {
     // client validation
     axios.post('/login', { name, password })
       .then(function (response) {
-        console.log(response.data);
+        if (response.data.isValid === false) {
+          setErrors(response.data.errors);
+          return;
+        }
+        setErrors([])
+        setAuth(true);
       })
       .catch(err => console.log(err));
   }
-
-
 
 
   return (
@@ -86,8 +101,15 @@ function LoginPage(props) {
           placeholder='Password' type='password'
         />
         <Btn children={'LOGIN'} variant='contained' onClick={submitForm} />
-        <Btn children={'CHECK'} variant='contained' onClick={checkAuth} />
         <Link to='/register'>Don't have an account ? REGISTER NOW</Link>
+        {errors.length === 0 ? null :
+          <Alert severity="info" style={{
+            width: "80%", textAlign: "center", marginTop: 50
+          }}>
+            {errors[0]}
+          </Alert>
+        }
+        {auth ? <Redirect to="/" /> : null}
       </Form>
     </StylesProvider>
   )

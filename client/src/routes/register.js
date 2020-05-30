@@ -1,10 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StylesProvider } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 import Image from '../assets/whisper.png';
 import { Form, Header, Input, Btn, Img, Link } from './login';
-import { SocketContext } from '../context';
-import Alert from '@material-ui/lab/Alert';
 import { CircularProgress as Spinner } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import axios from "axios";

@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React, { Suspense, lazy, useContext, useEffect } from "react";
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import "./index.css";
 import SocketContextProvider from "./context";
 
@@ -12,17 +12,17 @@ const Notifications = lazy(() => import('./routes/notifications'));
 function App() {
   return (
     <Router>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Switch>
-          <Route exact path="/" component={Login} />
-          <Route exact path="/register" component={Register} />
-          <SocketContextProvider>
+      <SocketContextProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Switch>
+            <Route exact path="/" component={Login} />
+            <Route exact path="/register" component={Register} />
             <Route exact path="/rooms" component={Rooms} />
             <Route exact path="/contacts" component={Contacts} />
             <Route exact path="/notifications" component={Notifications} />
-          </SocketContextProvider>
-        </Switch>
-      </Suspense>
+          </Switch>
+        </Suspense>
+      </SocketContextProvider >
     </Router>
   )
 }

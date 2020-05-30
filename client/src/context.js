@@ -9,12 +9,12 @@ function SocketContextProvider({ children }) {
   const [route, setRoute] = useState('rooms');
 
   useEffect(function () {
-    const connection = IO("http://192.168.1.84:3001");
+    const connection = IO("http://192.168.1.73:3001");
     setSocket(connection);
     console.log("Conntected from the context")
   }, [])
   return (
-    <SocketContext.Provider value={[socket, setSocket, auth, setAuth, route, setRoute]}>
+    <SocketContext.Provider value={{ socket, setSocket, auth, setAuth, route, setRoute }}>
       {children}
     </SocketContext.Provider>
   )
