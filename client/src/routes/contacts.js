@@ -19,7 +19,7 @@ const fabStyle = {
 
 function Contacts(props) {
   const [contacts, setContacts] = useState([]);
-  const [name, setName] = useState([]);
+  const [name, setName] = useState('');
   const [nameErrors, setNameErrors] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);

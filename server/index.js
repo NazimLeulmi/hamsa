@@ -31,7 +31,9 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, max: 60, min: 60, required: true },
   publicKey: { type: String, max: 786, min: 786, required: true },
   contacts: [{ type: String, max: 150, min: 5, ref: 'user' }],
-  groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
+  contactRequests: [{ type: String, max: 150, min: 5, ref: 'user' }],
+  groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'group' }],
+  groupRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'group' }],
 })
 const UserModel = new mongoose.model("user", UserSchema);
 const GroupSchema = new mongoose.Schema({
@@ -113,7 +115,7 @@ app.post('/login', async function (req, res) {
     isValid: false,
     errors: ["The name or password is incorrect"]
   });
-  const isCorrect = compare(password, user.password);
+  const isCorrect = await compare(password, user.password);
   if (isCorrect === false) return res.json({
     isValid: false,
     errors: ["The name or password is incorrect"]
@@ -143,6 +145,18 @@ app.post('/addContact', async function (req, res) {
   if (isValid === false) {
     return res.json({ isValid: false, errors });
   }
+  const contact = await UserModel.findOne({ name });
+  if (!contact) return res.json({ isValid: false, errors: ["Contact doesn't exist"] })
+  const user = await UserModel.findOne({ name: req.session.userData.name });
+  const exists = user.contacts.includes(name);
+  if (exists) return res.json({ isValid: false, errors: ["Contact already exists"] });
+  const requestExists = user.contactRequests.includes(name);
+  if (requestExists) return res.json({ isValid: false, errors: ["Request has been sent already"] });
+  contact.contactRequests.push(req.session.userData.name);
+  contact.save(function (saved) {
+    console.log("Saved Request");
+    return res.json({ isValid: true, errors: [], saved });
+  })
 });
 io.origins('*:*') // for latest version
 io.on('connection', (socket) => {
