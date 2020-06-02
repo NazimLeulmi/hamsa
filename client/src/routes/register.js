@@ -147,12 +147,12 @@ function Register(props) {
           placeholder='Name'
         />
         <Input
-          variant='filled' label='Password'
+          variant='filled' label='Password' type="password"
           name='password' value={password} onChange={handleChange}
           placeholder='Password'
         />
         <Input
-          variant='filled' label='Password confirmation'
+          variant='filled' label='Password confirmation' type="password"
           name='passwordc' value={passwordc} onChange={handleChange}
           placeholder='Password confirmation'
         />

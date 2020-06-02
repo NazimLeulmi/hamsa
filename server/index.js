@@ -23,6 +23,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
   console.log("Connected to MongoDB")
 });
+
 //////////////////////////////////////////////
 ///// Data Models: MongoDB models ///////////
 ////////////////////////////////////////////
@@ -134,7 +135,7 @@ app.get('/checkAuth', async function (req, res) {
   return res.json({ auth: false });
 });
 /////////////////////////////////////////////
-///// Add a contact (Send a request)   /////
+///// Add a contact (Send a friend / contact request)   /////
 ///////////////////////////////////////////
 app.post('/addContact', async function (req, res) {
   if (!req.session.userData) {
@@ -142,17 +143,46 @@ app.post('/addContact', async function (req, res) {
   }
   const { name } = req.body;
   const { isValid, errors } = addContactValidation(name);
+  const contactName = name;
+  const userName = req.session.userData.name;
+  // Form validation
   if (isValid === false) {
     return res.json({ isValid: false, errors });
   }
-  const contact = await UserModel.findOne({ name });
+  // Prevent a user from adding him/herself
+  if (contactName === userName) return res.json({ isValid: false, errors: ["You can't add yourself"] })
+  // Get the contact from the database
+  const contact = await UserModel.findOne({ name: contactName });
+  // Check if the contact exists in the database
   if (!contact) return res.json({ isValid: false, errors: ["Contact doesn't exist"] })
-  const user = await UserModel.findOne({ name: req.session.userData.name });
-  const exists = user.contacts.includes(name);
-  if (exists) return res.json({ isValid: false, errors: ["Contact already exists"] });
-  const requestExists = user.contactRequests.includes(name);
-  if (requestExists) return res.json({ isValid: false, errors: ["Request has been sent already"] });
-  contact.contactRequests.push(req.session.userData.name);
+  // Get the user that wants to add the contact from the database
+  // I'm assuming that the user exists in the database because he/she is loged in
+  const user = await UserModel.findOne({ name: userName });
+  // Check if the contact already exists in the user's contact list
+  const alreadyContact = user.contacts.includes(contactName);
+  if (alreadyContact) return res.json({ isValid: false, errors: ["Contact already exists"] });
+  // Check if the user already sent a friend / contact request
+  const requestSent = contact.contactRequests.includes(userName);
+  if (requestSent) return res.json({ isValid: false, errors: ["Request has been sent already"] });
+  // If the user has a contact request from the contact add them auto
+  const requestExists = user.contactRequests.includes(contactName);
+  if (requestExists) {
+    // Delete the contact / friend request
+    const requestIndex = user.contactRequests.indexOf(contactName);
+    user.contactRequests.splice(requestIndex, 1);
+    // Add the contacts
+    user.contacts.push(contactName);
+    contact.contacts.push(userName);
+    user.save(function (savedUser) {
+      console.log("Added contact to user", savedUser);
+      contact.save(function (savedContact) {
+        console.log("Added contact to user", savedUser);
+        return res.json({ isValid: true, errors: [], saved });
+      })
+    })
+  }
+  // If everything is Okay push a contact / friend request and save the contact
+  contact.contactRequests.push(userName);
   contact.save(function (saved) {
     console.log("Saved Request");
     return res.json({ isValid: true, errors: [], saved });
