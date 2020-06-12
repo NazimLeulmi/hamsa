@@ -12,7 +12,6 @@ const publicEncrypt = require('crypto').publicEncrypt;
 const genSalt = require('bcryptjs').genSalt;
 const genHash = require('bcryptjs').hash;
 const compare = require('bcryptjs').compare;
-
 //////////////////////////////////////////////
 ///// Database: MongoDB connection /////////
 ////////////////////////////////////////////
@@ -23,7 +22,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
   console.log("Connected to MongoDB")
 });
-
 //////////////////////////////////////////////
 ///// Data Models: MongoDB models ///////////
 ////////////////////////////////////////////
@@ -134,9 +132,9 @@ app.get('/checkAuth', async function (req, res) {
   }
   return res.json({ auth: false });
 });
-/////////////////////////////////////////////
-///// Add a contact (Send a friend / contact request)   /////
-///////////////////////////////////////////
+///////////////////////////////////
+///// Add a contact request //////
+/////////////////////////////////
 app.post('/addContact', async function (req, res) {
   if (!req.session.userData) {
     return res.json({ isValid: false, errors: ["You must be logged in"] });
@@ -187,6 +185,19 @@ app.post('/addContact', async function (req, res) {
     console.log("Saved Request");
     return res.json({ isValid: true, errors: [], saved });
   })
+});
+
+//////////////////////////////////
+///// Get Contact Requests //////
+////////////////////////////////
+app.get('/contactRequests', async function (req, res) {
+  console.log('Getting contact requests');
+  if (!req.session.userData || !req.session.userData.name) {
+    return res.json({ auth: false, error: "Restricted request" });
+  }
+  const user = await UserModel.findOne({ name: req.session.userData.name });
+  console.log(user.contactRequests);
+  return res.json({ requests: user.contactRequests });
 });
 io.origins('*:*') // for latest version
 io.on('connection', (socket) => {

@@ -9,17 +9,24 @@ import Alert from '@material-ui/lab/Alert';
 import Image from '../assets/whisper.png';
 import axios from "axios";
 axios.defaults.withCredentials = true;
-
+export const colors = {
+  "violet": "#726E97", // Rhythm
+  "white": "#FDFFFC", // Baby Powder
+  "blue": "#009FB7", // Blue Munsell
+  "red": "#A5243D"  // Vivid Burgundy
+}
 export const Form = styled.form`
   display:flex; flex-direction:column;
   align-items:center;
   position:relative;
   width:100%;
   height:100vh;
-  background-color:lightblue;
+  background-color:${colors.white};
 `;
 export const Header = styled(Typography)`
   margin-top:10px;
+  color:${colors.violet};
+  font-weight:200;
 `;
 export const Input = styled(TextField)`
   position:relative;
@@ -30,7 +37,8 @@ export const Input = styled(TextField)`
 export const Btn = styled(Button)`
   width:90%; height:56px;
   margin-top: 10px;
-  background-color:rgba(255,255,255,.35);
+  background-color:${colors.violet};
+  color:${colors.white};
 `;
 export const Img = styled.img`
   width:125px;
@@ -47,6 +55,7 @@ function LoginPage(props) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState([]);
+  const [checkedAuth, setCheckedAuth] = useState(false);
   const { user, setUser } = useContext(SocketContext);
 
 
@@ -67,10 +76,10 @@ function LoginPage(props) {
       .then(function (response) {
         if (response.data.auth === true) {
           setUser(response.data.user);
-          return;
         } else {
           setUser(null);
         }
+        setCheckedAuth(true);
       })
       .catch(err => console.log(err))
   }
@@ -113,7 +122,7 @@ function LoginPage(props) {
             {errors[0]}
           </Alert>
         }
-        {user ? <Redirect to="/rooms" /> : null}
+        {checkedAuth && user ? <Redirect to="/rooms" /> : null}
       </Form>
     </StylesProvider>
   )

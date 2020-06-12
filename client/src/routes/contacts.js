@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
-// import styled from "styled-components";
-// import Paper from "@material-ui/core/Paper";
-import { Container } from "./rooms";
+import { Container, TopMobileBar, Header } from "./rooms";
 import MobileNav from "./nav";
 import Dialog from "./dialog";
+import Image from '../assets/whisper.png';
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/GroupAdd";
 import axios from "axios";
 import { SocketContext } from "../context";
 import { Redirect } from "react-router-dom";
+import { colors } from "./login";
 axios.defaults.withCredentials = true;
 
 const fabStyle = {
   position: "fixed",
   bottom: "75px",
   right: "20px",
+  color: colors.violet
 };
 
 function Contacts(props) {
@@ -23,8 +24,25 @@ function Contacts(props) {
   const [nameErrors, setNameErrors] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { user } = useContext(SocketContext);
-
+  const [redirect, setRedirect] = useState(false);
+  const { user, setUser } = useContext(SocketContext);
+  useEffect(function () {
+    checkAuth();
+  }, [])
+  function checkAuth(e) {
+    console.log("Checking Auth from contacts");
+    axios.get('/checkAuth')
+      .then(function (response) {
+        if (response.data.auth === true) {
+          setUser(response.data.user);
+          setRedirect(false);
+        } else {
+          setUser(null);
+          setRedirect(true);
+        }
+      })
+      .catch(err => console.log(err))
+  }
   function openDialog() {
     setOpen(true);
   }
@@ -42,12 +60,12 @@ function Contacts(props) {
         }
       }).catch(err => console.log(err));
   }
-  // Get all contacts from the server
-  useEffect(function () {
-  }, []);
   return (
     <Container>
-      <h1>Contacts</h1>
+      <TopMobileBar>
+        <img src={Image} height="55" style={{ marginLeft: 15 }} />
+        <Header>Contacts</Header>
+      </TopMobileBar>
       <Dialog open={open}
         close={closeDialog}
         add={addContact}
@@ -57,7 +75,6 @@ function Contacts(props) {
         loading={loading}
       />
       <Fab
-        color="primary"
         aria-label="add"
         style={fabStyle}
         onClick={openDialog}
@@ -65,7 +82,7 @@ function Contacts(props) {
         <AddIcon />
       </Fab>
       <MobileNav />
-      {user ? null : <Redirect to="/" />}
+      {redirect ? <Redirect to="/" /> : null}
     </Container>
   );
 }
