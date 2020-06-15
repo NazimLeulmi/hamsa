@@ -65,17 +65,17 @@ app.use(bodyParser.json());
 ///// User Registeration : Data Validation /////////
 ///////////////////////////////////////////////////
 app.post("/validate", async function (req, res) {
-  console.log("Validating form data");
   const { name, password, passwordc, answer, a, b } = req.body;
   const { isValid, errors } = regValidation(name, password, passwordc, answer, a, b);
   if (isValid == false) {
     return res.json({ errors, isValid: false });
   }
+  console.log("validating",name);
   const user = await UserModel.findOne({ name })
   if (user) {
     return res.json({
       errors: ["The username has already been taken"],
-      isValid: true
+      isValid: false
     });
   }
   return res.json({ errors: [], isValid: true });
@@ -84,7 +84,6 @@ app.post("/validate", async function (req, res) {
 ///// User Registeration : User Creation /////
 /////////////////////////////////////////////
 app.post("/register", async function (req, res) {
-  console.log("Creating user");
   const { name, password, publicKey } = req.body;
   try {
     const salt = await genSalt(10);
@@ -102,9 +101,7 @@ app.post("/register", async function (req, res) {
 /////  User Login : User Authentication  /////
 /////////////////////////////////////////////
 app.post('/login', async function (req, res) {
-  console.log('User Logging In');
   const { name, password } = req.body;
-  console.log(name, password, "data")
   const { isValid, errors } = loginValidation(name, password);
   if (isValid === false) {
     return res.json({ isValid: false, errors });
@@ -126,7 +123,6 @@ app.post('/login', async function (req, res) {
 /////  User Login : Check Authentication  ////
 /////////////////////////////////////////////
 app.get('/checkAuth', async function (req, res) {
-  console.log('User Logging In');
   if (req.session.userData && req.session.userData.name) {
     return res.json({ auth: true, user: req.session.userData.name });
   }
@@ -182,7 +178,6 @@ app.post('/addContact', async function (req, res) {
   // If everything is Okay push a contact / friend request and save the contact
   contact.contactRequests.push(userName);
   contact.save(function (saved) {
-    console.log("Saved Request");
     return res.json({ isValid: true, errors: [], saved });
   })
 });
@@ -191,8 +186,9 @@ app.post('/addContact', async function (req, res) {
 ///// Get Contact Requests //////
 ////////////////////////////////
 app.get('/contactRequests', async function (req, res) {
-  console.log('Getting contact requests');
+  console.log("Getting Contacts");
   if (!req.session.userData || !req.session.userData.name) {
+    console.log("Restricted request");
     return res.json({ auth: false, error: "Restricted request" });
   }
   const user = await UserModel.findOne({ name: req.session.userData.name });

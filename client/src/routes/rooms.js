@@ -1,10 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 // import Paper from '@material-ui/core/Paper';
 import MobileNav from "./nav";
 import Image from '../assets/whisper.png';
 import axios from "axios";
-import { SocketContext } from "../context";
 import { Redirect } from "react-router-dom";
 import { colors } from "./login";
 axios.defaults.withCredentials = true
@@ -29,9 +28,8 @@ export const Header = styled.h1`
   font-weight:400;
 `;
 function Rooms(props) {
-  const [rooms, setRooms] = useState([]);
+  // const [rooms, setRooms] = useState([]);
   const [redirect, setRedirect] = useState(false);
-  const { user, setUser } = useContext(SocketContext);
   useEffect(function () {
     checkAuth();
   }, [])
@@ -40,10 +38,8 @@ function Rooms(props) {
     axios.get('/checkAuth')
       .then(function (response) {
         if (response.data.auth === true) {
-          setUser(response.data.user);
           setRedirect(false);
         } else {
-          setUser(null);
           setRedirect(true);
         }
       })
@@ -52,7 +48,7 @@ function Rooms(props) {
   return (
     <Container >
       <TopMobileBar>
-        <img src={Image} height="55" style={{ marginLeft: 15 }} />
+        <img alt="Logo" src={Image} height="55" style={{ marginLeft: 15 }} />
         <Header>Rooms</Header>
       </TopMobileBar>
       <MobileNav />

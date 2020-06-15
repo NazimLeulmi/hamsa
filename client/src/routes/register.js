@@ -20,7 +20,6 @@ function Register(props) {
   const [passwordc, setPasswordc] = useState('');
   const [loading, setLoading] = useState(false);
   const [registered, setRegistered] = useState(false);
-  const [errors, setErrors] = useState([]);
   // Antispam question
   const [a] = useState(rand(1, 10));
   const [b] = useState(rand(1, 10));
@@ -40,7 +39,6 @@ function Register(props) {
     axios.post('/validate', { name, password, passwordc, answer, a, b })
       .then(async function (response) {
         if (response.data.isValid === false) {
-          setErrors(response.data.errors);
           setAlert(response.data.errors[0]);
           setSeverity('error');
           setOpen(true)
@@ -71,7 +69,6 @@ function Register(props) {
             axios.post('/register', { name, password, publicKey: pubKeyPem })
               .then(function (response) {
                 if (response.data.registered === true) {
-                  setErrors([]);
                   setAlert('You have been registered');
                   setSeverity('success');
                   setOpen(true)

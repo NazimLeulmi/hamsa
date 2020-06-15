@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Container, TopMobileBar, Header } from "./rooms";
+import React, { useState, useEffect} from "react";
+import { Redirect } from "react-router-dom";
 import MobileNav from "./nav";
 import Dialog from "./dialog";
 import Image from '../assets/whisper.png';
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/GroupAdd";
 import axios from "axios";
-import { SocketContext } from "../context";
-import { Redirect } from "react-router-dom";
 import { colors } from "./login";
+import { Container, TopMobileBar, Header } from "./rooms";
 axios.defaults.withCredentials = true;
 
 const fabStyle = {
@@ -19,13 +18,12 @@ const fabStyle = {
 };
 
 function Contacts(props) {
-  const [contacts, setContacts] = useState([]);
+  // const [contacts, setContacts] = useState([]);
   const [name, setName] = useState('');
   const [nameErrors, setNameErrors] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
-  const { user, setUser } = useContext(SocketContext);
   useEffect(function () {
     checkAuth();
   }, [])
@@ -34,10 +32,8 @@ function Contacts(props) {
     axios.get('/checkAuth')
       .then(function (response) {
         if (response.data.auth === true) {
-          setUser(response.data.user);
           setRedirect(false);
         } else {
-          setUser(null);
           setRedirect(true);
         }
       })
@@ -63,7 +59,7 @@ function Contacts(props) {
   return (
     <Container>
       <TopMobileBar>
-        <img src={Image} height="55" style={{ marginLeft: 15 }} />
+        <img src={Image} height="55" style={{ marginLeft: 15 }} alt="Logo" />
         <Header>Contacts</Header>
       </TopMobileBar>
       <Dialog open={open}

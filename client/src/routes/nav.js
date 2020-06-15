@@ -19,7 +19,7 @@ export default function MobileNavigation() {
     const parsedRoute = pathname.substring(1);
     console.log(parsedRoute);
     setRoute(parsedRoute);
-  }, [])
+  },[])
 
   const handleChange = (event, newValue) => {
     setRoute(newValue);

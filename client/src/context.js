@@ -5,16 +5,15 @@ export const SocketContext = createContext(null);
 
 function SocketContextProvider({ children }) {
   const [socket, setSocket] = useState(null)
-  const [user, setUser] = useState(null);
   const [route, setRoute] = useState('rooms');
 
   useEffect(function () {
-    const connection = IO("http://192.168.1.23:3001");
+    const connection = IO("http://192.168.1.78:3001");
     setSocket(connection);
     console.log("Conntected from the context")
   }, [])
   return (
-    <SocketContext.Provider value={{ socket, setSocket, route, setRoute, user, setUser }}>
+    <SocketContext.Provider value={{ socket, setSocket, route, setRoute }}>
       {children}
     </SocketContext.Provider>
   )

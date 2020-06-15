@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link as lnk } from 'react-router-dom';
+import { Link as lnk  , Redirect} from 'react-router-dom';
 import { TextField, Button, Typography } from '@material-ui/core';
 import { StylesProvider } from '@material-ui/core/styles';
-import { SocketContext } from "../context";
-import { Redirect } from "react-router-dom";
 import Alert from '@material-ui/lab/Alert';
 import Image from '../assets/whisper.png';
 import axios from "axios";
@@ -55,13 +53,12 @@ function LoginPage(props) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState([]);
-  const [checkedAuth, setCheckedAuth] = useState(false);
-  const { user, setUser } = useContext(SocketContext);
+  const [redirect, setRedirect] = useState(false);
 
 
   useEffect(function () {
     checkAuth();
-  }, [])
+  },[])
 
   function handleChange(e) {
     if (e.target.name === 'password') {
@@ -75,11 +72,10 @@ function LoginPage(props) {
     axios.get('/checkAuth')
       .then(function (response) {
         if (response.data.auth === true) {
-          setUser(response.data.user);
+          setRedirect(true);
         } else {
-          setUser(null);
+          setRedirect(false);
         }
-        setCheckedAuth(true);
       })
       .catch(err => console.log(err))
   }
@@ -91,8 +87,8 @@ function LoginPage(props) {
           setErrors(response.data.errors);
           return;
         }
-        setErrors([])
-        setUser(name);
+        setErrors([]);
+        setRedirect(true);
       })
       .catch(err => console.log(err));
   }
@@ -122,7 +118,7 @@ function LoginPage(props) {
             {errors[0]}
           </Alert>
         }
-        {checkedAuth && user ? <Redirect to="/rooms" /> : null}
+        {redirect ? <Redirect to="/rooms" /> : null}
       </Form>
     </StylesProvider>
   )
