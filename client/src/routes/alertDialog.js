@@ -6,30 +6,30 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export default function AlertDialog({title,text,open}) {
+export default function AlertDialog({ title, text, open, confirm, cancel }) {
   return (
-      <Dialog
-        open={open}
-        // onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
+    <Dialog
+      open={open}
+      // onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
         {title}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {text}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button color="primary">
-            CONFIRM
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          {text}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={confirm} color="primary">
+          CONFIRM
           </Button>
-          <Button color="primary">
-            CANCEL
+        <Button onClick={cancel} color="primary">
+          CANCEL
           </Button>
-        </DialogActions>
-      </Dialog>
+      </DialogActions>
+    </Dialog>
   );
 }

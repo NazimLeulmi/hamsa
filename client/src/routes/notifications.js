@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Container, TopMobileBar, Header } from "./rooms";
-import Image from "../assets/whisper.png";
-import MobileNav from "./nav";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
-import { colors } from "./login";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddContactIcon from "@material-ui/icons/PersonAdd";
 import AlertDialog from "./alertDialog";
+import Image from "../assets/whisper.png";
+import MobileNav from "./nav";
+import { Container, TopMobileBar, Header } from "./rooms";
+import { colors } from "./login";
 
-const Notification = styled.div`
+axios.defaults.withCredentials = true;
+
+export const Row = styled.div`
   width: 100%;
   height: 65px;
   background-color: rgba(0, 0, 0, 0.045);
@@ -19,7 +21,7 @@ const Notification = styled.div`
   align-items: center;
 `;
 
-const Avatar = styled.div`
+export const Avatar = styled.div`
   height: 50px;
   width: 50px;
   border-radius: 50px;
@@ -40,7 +42,7 @@ const SubHeader = styled.h2`
   align-self: flex-start;
   margin-left: 15px;
 `;
-const Text = styled.h3`
+export const Text = styled.h3`
   font-size: 16px;
   font-weight: 400;
   color: gray;
@@ -55,6 +57,8 @@ function Notifications(props) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
+  const [current, setCurrent] = useState("");
+  const [target, setTarget] = useState("");
 
   // Check if the user is logged in
   useEffect(function () {
@@ -90,17 +94,66 @@ function Notifications(props) {
       })
       .catch((err) => console.log(err));
   }
-  function openDelete(e) {
-    setTitle("Contact request rejection");
-    setText("Do you want to delete this contact request?");
+  function openRejectContact(e) {
+    const currentTarget = e.currentTarget.parentNode.textContent.substring(2);
+    setTitle("Request rejection");
+    setText(`Do you want to reject ${currentTarget}'s contact request?`);
+    setCurrent("rejectContact");
     setOpen(true);
+    setTarget(currentTarget);
   }
-  function openAdd(e) {
-    setTitle("Contact request confirmation");
-    setText("Do you want to add this contact?");
+  function openConfirmContact(e) {
+    const currentTarget = e.currentTarget.parentNode.textContent.substring(2);
+    setTitle("Request confirmation");
+    setText(`Do you want to add ${currentTarget} to your contacts list?`);
+    setCurrent("confirmContact");
     setOpen(true);
+    setTarget(currentTarget);
   }
-
+  function openRejectInv(e) {
+    const currentTarget = e.currentTarget.parentNode.textContent.substring(2);
+    setTitle("Room invitation rejection");
+    setText(`Do you want to reject ${currentTarget}'s invitation?` );
+    setCurrent("rejectInv");
+    setOpen(true);
+    setTarget(currentTarget);
+  }
+  function openConfirmInv(e) {
+    const currentTarget = e.currentTarget.parentNode.textContent.substring(2);
+    setTitle("Room invitation confirmation");
+    setText(`Do you want to join ${currentTarget}?` );
+    setCurrent("confirmInv");
+    setOpen(true);
+    setTarget(currentTarget);
+  }
+  // confirm current action
+  function confirm(e){
+    switch (current) {
+      case "rejectContact":
+        axios.post("/rejectContact",{name:target})
+          .then(res=>{
+            console.log(res.data);
+            setOpen(false);
+          }).catch(err=>console.log(err));
+        break;
+      case "confirmContact":
+        axios.post("/confirmContact",{name:target})
+          .then(res=>{
+            console.log(res.data);
+            setOpen(false);
+          }).catch(err=>console.log(err));
+        break;
+      case "rejectInv":
+        // do something
+        break;
+      case "confirmInv":
+        // do something
+        break;
+      default:
+        console.log("Something wrong happened");
+        break;
+    }
+  }
   return (
     <Container>
       <TopMobileBar>
@@ -108,37 +161,36 @@ function Notifications(props) {
         <Header>Notifications</Header>
       </TopMobileBar>
       <SubHeader>Contact Requests</SubHeader>
-      {contactRequests && contactRequests.length !== 0 ? (
-        contactRequests.map((req) => (
-          <Notification key={req}>
+      {contactRequests && contactRequests.length !== 0 ? 
+        contactRequests.map(req => (
+          <Row key={req}>
             <Avatar>{req.substring(0, 2)}</Avatar>
             <label style={{ marginLeft: 15 }}>{req}</label>
             <IconButton
               aria-label="delete"
               style={deleteStyle}
-              onClick={openDelete}
+              onClick={openRejectContact}
             >
               <DeleteIcon />
             </IconButton>
             <IconButton
               aria-label="confirm"
               style={{ color: colors.violet }}
-              onClick={openAdd}
+              onClick={openConfirmContact}
             >
               <AddContactIcon />
             </IconButton>
-          </Notification>
+          </Row>
         ))
-      ) : (
-        <Text>You don't have any contact requests</Text>
-      )}
+       : <Text>You don't have any contact requests</Text>
+      }
       <SubHeader>Room invitations</SubHeader>
       {roomInv && roomInv.length === 0 ? (
         <Text>You don't have any room invitations</Text>
       ) : (
-        contactRequests.map((req) => <Notification>{req}</Notification>)
+        roomInv.map((req) => <Row>{req}</Row>)
       )}
-      <AlertDialog open={open} title={title} text={text} />
+      <AlertDialog open={open} confirm={confirm} cancel={()=>setOpen(false)} title={title} text={text} />
       {redirect ? <Redirect to="/" /> : null}
       <MobileNav />
     </Container>

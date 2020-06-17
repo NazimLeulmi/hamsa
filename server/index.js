@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const MongoStore = require('connect-mongo')(session);
 const regValidation = require('./validation').regValidation;
 const loginValidation = require('./validation').loginValidation;
-const addContactValidation = require('./validation').addContactValidation;
+const nameValidation = require('./validation').nameValidation;
 const publicEncrypt = require('crypto').publicEncrypt;
 const genSalt = require('bcryptjs').genSalt;
 const genHash = require('bcryptjs').hash;
@@ -29,19 +29,25 @@ const UserSchema = new mongoose.Schema({
   name: { type: String, max: 150, min: 5, required: true },
   password: { type: String, max: 60, min: 60, required: true },
   publicKey: { type: String, max: 786, min: 786, required: true },
-  contacts: [{ type: String, max: 150, min: 5, ref: 'user' }],
-  contactRequests: [{ type: String, max: 150, min: 5, ref: 'user' }],
-  groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'group' }],
-  groupRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'group' }],
+  // contacts: [{ type: String, max: 150, min: 5, ref: 'user' }],
+  // contactRequests: [{ type: String, max: 150, min: 5, ref: 'user' }],
+  // rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'room' }],
 })
+// roomInvitations: [{
+//   // roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'room' },
+//   name: { type: String, max: 150, min: 5, ref: 'room' },
+// }]
 const UserModel = new mongoose.model("user", UserSchema);
-const GroupSchema = new mongoose.Schema({
-  name: { type: String, max: 85, min: 5, required: true },
+const RoomSchema = new mongoose.Schema({
+  name: { type: String, max: 150, min: 5, required: true },
   admin: { type: String, max: 150, min: 5, required: true },
-  users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true }],
+  users: [{
+    name: { type: String, ref: 'user', max: 150, min: 5, required: true },
+    publicKey: { type: String, ref: "user", max: 786, min: 786, required: true }
+  }],
   chat: [{ type: mongoose.Schema.Types.ObjectId, ref: 'message' }],
 });
-const GroupModel = new mongoose.model("group", GroupSchema);
+const RoomModel = new mongoose.model("room", RoomSchema);
 //////////////////////////////////////////////////
 ///// User Authorization: express-session ///////
 ////////////////////////////////////////////////
@@ -70,15 +76,17 @@ app.post("/validate", async function (req, res) {
   if (isValid == false) {
     return res.json({ errors, isValid: false });
   }
-  console.log("validating",name);
-  const user = await UserModel.findOne({ name })
-  if (user) {
-    return res.json({
-      errors: ["The username has already been taken"],
-      isValid: false
-    });
-  }
-  return res.json({ errors: [], isValid: true });
+  console.log("validating", name);
+  try {
+    const user = await UserModel.findOne({ name })
+    if (user) {
+      return res.json({
+        errors: ["The username has already been taken"],
+        isValid: false
+      });
+    }
+    return res.json({ errors: [], isValid: true });
+  } catch (err) { return console.log(err) }
 })
 ///////////////////////////////////////////////
 ///// User Registeration : User Creation /////
@@ -128,6 +136,18 @@ app.get('/checkAuth', async function (req, res) {
   }
   return res.json({ auth: false });
 });
+///////////////////////////
+///// Get Contacts  //////
+/////////////////////////
+app.get('/contacts', async function (req, res) {
+  console.log("Getting Contacts");
+  if (!req.session.userData || !req.session.userData.name) {
+    console.log("Restricted request");
+    return res.json({ auth: false, error: "Restricted request" });
+  }
+  const user = await UserModel.findOne({ name: req.session.userData.name });
+  return res.json({ contacts: user.contacts });
+});
 ///////////////////////////////////
 ///// Add a contact request //////
 /////////////////////////////////
@@ -136,7 +156,7 @@ app.post('/addContact', async function (req, res) {
     return res.json({ isValid: false, errors: ["You must be logged in"] });
   }
   const { name } = req.body;
-  const { isValid, errors } = addContactValidation(name);
+  const { isValid, errors } = nameValidation(name);
   const contactName = name;
   const userName = req.session.userData.name;
   // Form validation
@@ -167,21 +187,15 @@ app.post('/addContact', async function (req, res) {
     // Add the contacts
     user.contacts.push(contactName);
     contact.contacts.push(userName);
-    user.save(function (savedUser) {
-      console.log("Added contact to user", savedUser);
-      contact.save(function (savedContact) {
-        console.log("Added contact to user", savedUser);
-        return res.json({ isValid: true, errors: [], saved });
-      })
-    })
+    const savedUser = await user.save();
+    const savedContact = await contact.save();
+    return res.json({ isValid: true, errors: [] });
   }
   // If everything is Okay push a contact / friend request and save the contact
   contact.contactRequests.push(userName);
-  contact.save(function (saved) {
-    return res.json({ isValid: true, errors: [], saved });
-  })
+  const savedContact = await contact.save();
+  return res.json({ isValid: true, errors: [] });
 });
-
 //////////////////////////////////
 ///// Get Contact Requests //////
 ////////////////////////////////
@@ -194,6 +208,87 @@ app.get('/contactRequests', async function (req, res) {
   const user = await UserModel.findOne({ name: req.session.userData.name });
   console.log(user.contactRequests);
   return res.json({ requests: user.contactRequests });
+});
+/////////////////////////////////////
+///// Confirm Contact Request //////
+///////////////////////////////////
+app.post('/confirmContact', async function (req, res) {
+  if (!req.session.userData || !req.session.userData.name) {
+    console.log("Restricted request");
+    return res.json({ auth: false, error: "Restricted request" });
+  }
+  const { name } = req.body;
+  const { isValid, errors } = nameValidation(name);
+  if (isValid === false || errors.length !== 0) {
+    return res.json({ errors });
+  }
+  const user = await UserModel.findOne({ name: req.session.userData.name });
+  // double checking
+  if (user.contactRequests.includes(name) === false) {
+    return res.json({ errors: ["The request doesn't exist"] });
+  } else if (user.contacts.includes(name)) {
+    return res.json({ errors: ["You already have this contact"] });
+  }
+  const target = await UserModel.findOne({ name });
+  if (!target) return res.json({ errors: ["Contact doesn't exist"] });
+  target.contacts.push(user.name);
+  user.contacts.push(target.name);
+  const requestIndex = user.contactRequests.indexOf(name);
+  user.contactRequests.splice(requestIndex, 1);
+  const savedUser = await user.save();
+  const savedTarget = await target.save();
+  console.log("Confirmed contact request");
+  return res.json({ success: true });
+});
+/////////////////////////////////////
+///// Reject Contact Request ///////
+///////////////////////////////////
+app.post('/rejectContact', async function (req, res) {
+  if (!req.session.userData || !req.session.userData.name) {
+    console.log("Restricted request");
+    return res.json({ auth: false, error: "Restricted request" });
+  }
+  const { name } = req.body;
+  const { isValid, errors } = nameValidation(name);
+  if (isValid === false || errors.length !== 0) {
+    return res.json({ errors });
+  }
+  const user = await UserModel.findOne({ name: req.session.userData.name });
+  // double checking
+  if (user.contactRequests.includes(name) === false) {
+    return res.json({ errors: ["The request doesn't exist"] });
+  }
+  const requestIndex = user.contactRequests.indexOf(name);
+  user.contactRequests.splice(requestIndex, 1);
+  const result = await user.save();
+  console.log("Rejected contact request");
+  return res.json({ success: true });
+});
+/////////////////////////
+///// Create Room //////
+///////////////////////
+app.post('/createRoom', async function (req, res) {
+  if (!req.session.userData || !req.session.userData.name) {
+    console.log("Restricted request");
+    return res.json({ error: "Restricted request" });
+  }
+  const { name } = req.body;
+  const { isValid, errors } = nameValidation(name);
+  if (isValid === false || errors.length !== 0) {
+    return res.json({ isValid: false, errors });
+  }
+  const user = await UserModel.findOne({ name: req.session.userData.name });
+  for (let i = 0; i < users.rooms.length; i++) {
+    if (user.rooms[i].name === name) {
+      return res.json({ isValid: false, errors: [`You are already a member of ${name}`] });
+    }
+  }
+  const newRoom = new RoomModel({
+    name: user.name, admin: user.name,
+    users: [{ name: user.name, publicKey: user.publicKey }]
+  })
+  const savedRoom = await newRoom.save();
+  return res.json({ isValid: true, errors: [], room: savedRoom });
 });
 io.origins('*:*') // for latest version
 io.on('connection', (socket) => {

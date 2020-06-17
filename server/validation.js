@@ -56,7 +56,7 @@ function loginValidation(name, password) {
   return { isValid: errors.length === 0, errors }
 }
 
-function addContactValidation(name) {
+function nameValidation(name) {
   const errors = [];
   if (v.isEmpty(name)) {
     errors.push("The name is required");
@@ -66,5 +66,6 @@ function addContactValidation(name) {
   }
   return { isValid: errors.length === 0, errors }
 }
-
-module.exports = { loginValidation, regValidation, addContactValidation }
+module.exports = {
+  loginValidation, regValidation, nameValidation
+}

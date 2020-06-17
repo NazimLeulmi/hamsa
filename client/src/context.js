@@ -8,7 +8,7 @@ function SocketContextProvider({ children }) {
   const [route, setRoute] = useState('rooms');
 
   useEffect(function () {
-    const connection = IO("http://192.168.1.78:3001");
+    const connection = IO("http://192.168.1.97:3001");
     setSocket(connection);
     console.log("Conntected from the context")
   }, [])
