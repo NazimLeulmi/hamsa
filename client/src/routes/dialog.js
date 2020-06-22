@@ -7,7 +7,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export default function FormDialog({ open, close, add, name, setName, errors }) {
+
+export default function FormDialog({ open, close, add, name, setName, error }) {
 
   function handleChange(e) {
     setName(e.target.value);
@@ -26,8 +27,8 @@ export default function FormDialog({ open, close, add, name, setName, errors }) 
           type="text" fullWidth
           autoComplete="off" required
           value={name} onChange={handleChange}
-          helperText={errors.length === 0 ? null : errors[0]}
-          error={errors.length === 0 ? false : true}
+          helperText={error === "" ? null : error}
+          error={error === "" ? false : true}
         />
       </DialogContent>
       <DialogActions>

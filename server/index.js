@@ -29,14 +29,18 @@ const UserSchema = new mongoose.Schema({
   name: { type: String, max: 150, min: 5, required: true },
   password: { type: String, max: 60, min: 60, required: true },
   publicKey: { type: String, max: 786, min: 786, required: true },
-  // contacts: [{ type: String, max: 150, min: 5, ref: 'user' }],
-  // contactRequests: [{ type: String, max: 150, min: 5, ref: 'user' }],
-  // rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'room' }],
+  contacts: [{ type: String, max: 150, min: 5, ref: 'user' }],
+  contactRequests: [{ type: String, max: 150, min: 5, ref: 'user' }],
+  rooms: [{
+    name: { type: String, max: 85, min: 5, ref: 'room' },
+    roomId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'room' }],
+  }],
+  roomInvitations: [{
+    name: { type: String, max: 150, min: 5, ref: 'room' },
+    roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'room' },
+  }]
 })
-// roomInvitations: [{
-//   // roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'room' },
-//   name: { type: String, max: 150, min: 5, ref: 'room' },
-// }]
+
 const UserModel = new mongoose.model("user", UserSchema);
 const RoomSchema = new mongoose.Schema({
   name: { type: String, max: 150, min: 5, required: true },
@@ -156,28 +160,28 @@ app.post('/addContact', async function (req, res) {
     return res.json({ isValid: false, errors: ["You must be logged in"] });
   }
   const { name } = req.body;
-  const { isValid, errors } = nameValidation(name);
+  const error = nameValidation(name);
   const contactName = name;
   const userName = req.session.userData.name;
   // Form validation
-  if (isValid === false) {
-    return res.json({ isValid: false, errors });
+  if (error !== "") {
+    return res.json({ isValid: false, error });
   }
   // Prevent a user from adding him/herself
-  if (contactName === userName) return res.json({ isValid: false, errors: ["You can't add yourself"] })
+  if (contactName === userName) return res.json({ isValid: false, error: "You can't add yourself" })
   // Get the contact from the database
   const contact = await UserModel.findOne({ name: contactName });
   // Check if the contact exists in the database
-  if (!contact) return res.json({ isValid: false, errors: ["Contact doesn't exist"] })
+  if (!contact) return res.json({ isValid: false, error: "Contact doesn't exist" })
   // Get the user that wants to add the contact from the database
   // I'm assuming that the user exists in the database because he/she is loged in
   const user = await UserModel.findOne({ name: userName });
   // Check if the contact already exists in the user's contact list
   const alreadyContact = user.contacts.includes(contactName);
-  if (alreadyContact) return res.json({ isValid: false, errors: ["Contact already exists"] });
+  if (alreadyContact) return res.json({ isValid: false, error: "Contact already exists" });
   // Check if the user already sent a friend / contact request
   const requestSent = contact.contactRequests.includes(userName);
-  if (requestSent) return res.json({ isValid: false, errors: ["Request has been sent already"] });
+  if (requestSent) return res.json({ isValid: false, error: "Request has been sent already" });
   // If the user has a contact request from the contact add them auto
   const requestExists = user.contactRequests.includes(contactName);
   if (requestExists) {
@@ -189,12 +193,12 @@ app.post('/addContact', async function (req, res) {
     contact.contacts.push(userName);
     const savedUser = await user.save();
     const savedContact = await contact.save();
-    return res.json({ isValid: true, errors: [] });
+    return res.json({ isValid: true, error: "" });
   }
   // If everything is Okay push a contact / friend request and save the contact
   contact.contactRequests.push(userName);
   const savedContact = await contact.save();
-  return res.json({ isValid: true, errors: [] });
+  return res.json({ isValid: true, error: "" });
 });
 //////////////////////////////////
 ///// Get Contact Requests //////
@@ -218,19 +222,19 @@ app.post('/confirmContact', async function (req, res) {
     return res.json({ auth: false, error: "Restricted request" });
   }
   const { name } = req.body;
-  const { isValid, errors } = nameValidation(name);
-  if (isValid === false || errors.length !== 0) {
-    return res.json({ errors });
+  const error = nameValidation(name);
+  if (error !== "") {
+    return res.json({ error });
   }
   const user = await UserModel.findOne({ name: req.session.userData.name });
   // double checking
   if (user.contactRequests.includes(name) === false) {
-    return res.json({ errors: ["The request doesn't exist"] });
+    return res.json({ error: "The request doesn't exist" });
   } else if (user.contacts.includes(name)) {
-    return res.json({ errors: ["You already have this contact"] });
+    return res.json({ error: "You already have this contact" });
   }
   const target = await UserModel.findOne({ name });
-  if (!target) return res.json({ errors: ["Contact doesn't exist"] });
+  if (!target) return res.json({ error: "Contact doesn't exist" });
   target.contacts.push(user.name);
   user.contacts.push(target.name);
   const requestIndex = user.contactRequests.indexOf(name);

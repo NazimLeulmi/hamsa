@@ -6,6 +6,10 @@ import Image from '../assets/whisper.png';
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import { colors } from "./login";
+import Dialog from "./dialog";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/GroupAdd";
+import { fabStyle } from "./contacts";
 axios.defaults.withCredentials = true
 
 export const Container = styled.div`
@@ -30,9 +34,15 @@ export const Header = styled.h1`
 function Rooms(props) {
   // const [rooms, setRooms] = useState([]);
   const [redirect, setRedirect] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [roomName, setRoomName] = useState("");
+  const [error, setError] = useState("");
+
+
   useEffect(function () {
     checkAuth();
   }, [])
+
   function checkAuth(e) {
     console.log("Checking Auth from rooms");
     axios.get('/checkAuth')
@@ -45,6 +55,16 @@ function Rooms(props) {
       })
       .catch(err => console.log(err))
   }
+
+  function openDialog() {
+    setOpen(true);
+  }
+  function closeDialog() {
+    setOpen(false);
+  }
+  function addRoom() {
+    console.log("Create room on the backend");
+  }
   return (
     <Container >
       <TopMobileBar>
@@ -52,6 +72,14 @@ function Rooms(props) {
         <Header>Rooms</Header>
       </TopMobileBar>
       <MobileNav />
+      <Fab style={fabStyle} onClick={openDialog} > <AddIcon /> </Fab>
+      <Dialog open={open}
+        close={closeDialog}
+        add={addRoom}
+        name={roomName}
+        setName={(value) => setRoomName(value)}
+        error={error}
+      />
       {redirect ? <Redirect to="/" /> : null}
     </Container>
   )

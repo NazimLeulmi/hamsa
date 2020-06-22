@@ -13,7 +13,7 @@ import { Row, Avatar, Text } from "./notifications";
 
 axios.defaults.withCredentials = true;
 
-const fabStyle = {
+export const fabStyle = {
   position: "fixed",
   bottom: "75px",
   right: "20px",
@@ -22,8 +22,8 @@ const fabStyle = {
 
 function Contacts(props) {
   const [contacts, setContacts] = useState([]);
-  const [name, setName] = useState('');
-  const [errors, setErrors] = useState([]);
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
@@ -57,7 +57,7 @@ function Contacts(props) {
       .then(function (response) {
         setLoading(false);
         if (response.data.isValid === false) {
-          setErrors(response.data.errors);
+          setError(response.data.error);
           return;
         }
         setOpen(false);
@@ -95,7 +95,7 @@ function Contacts(props) {
         add={addContact}
         name={name}
         setName={(value) => setName(value)}
-        errors={errors}
+        error={error}
         loading={loading}
       />
       <MobileNav />
