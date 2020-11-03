@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="hamsa/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hamsa.iml" filepath="$PROJECT_DIR$/.idea/modules/hamsa.iml" group="hamsa" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1249723049/react-native-vector-icons.iml" filepath="$PROJECT_DIR$/.idea/modules/1249723049/react-native-vector-icons.iml" group="hamsa/react-native-vector-icons" />
+    </modules>
+  </component>
+</project>
