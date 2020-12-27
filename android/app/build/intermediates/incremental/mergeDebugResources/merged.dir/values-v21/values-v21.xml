@@ -329,6 +329,8 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textStyle">normal</item>
   </style>
+    <style name="Theme.Base" parent="android:Theme.Material.Light">
+    </style>
     <style name="ThemeOverlay.MaterialComponents.MaterialAlertDialog.Picker.Date" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
     <item name="android:buttonBarPositiveButtonStyle">@style/Widget.MaterialComponents.Button.TextButton.Dialog</item>
     <item name="android:buttonBarNegativeButtonStyle">@style/Widget.MaterialComponents.Button.TextButton.Dialog</item>

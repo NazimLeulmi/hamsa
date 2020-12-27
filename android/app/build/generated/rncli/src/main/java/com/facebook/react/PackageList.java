@@ -17,10 +17,14 @@ import org.reactnative.maskedview.RNCMaskedViewPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 // react-native-reanimated
 import com.swmansion.reanimated.ReanimatedPackage;
+// react-native-rsa-native
+import com.RNRSA.RNRSAPackage;
 // react-native-safe-area-context
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 // react-native-screens
 import com.swmansion.rnscreens.RNScreensPackage;
+// react-native-sensitive-info
+import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
 // react-native-vector-icons
 import com.oblador.vectoricons.VectorIconsPackage;
 
@@ -71,8 +75,10 @@ public class PackageList {
       new RNCMaskedViewPackage(),
       new RNGestureHandlerPackage(),
       new ReanimatedPackage(),
+      new RNRSAPackage(),
       new SafeAreaContextPackage(),
       new RNScreensPackage(),
+      new RNSensitiveInfoPackage(),
       new VectorIconsPackage()
     ));
   }

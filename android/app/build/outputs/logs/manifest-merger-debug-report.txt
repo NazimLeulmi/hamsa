@@ -8,13 +8,16 @@ MERGED from /home/naz/hamsa/android/app/src/main/AndroidManifest.xml:1:1-27:12
 MERGED from [com.facebook.flipper:flipper:0.54.0] /home/naz/.gradle/caches/transforms-2/files-2.1/1c7787ec82631e0394972c76bdabe608/flipper-0.54.0/AndroidManifest.xml:8:1-18:12
 MERGED from [com.facebook.flipper:flipper-network-plugin:0.54.0] /home/naz/.gradle/caches/transforms-2/files-2.1/bd2cab46fd45b530a274001375333ead/flipper-network-plugin-0.54.0/AndroidManifest.xml:8:1-15:12
 MERGED from [com.facebook.flipper:flipper-fresco-plugin:0.54.0] /home/naz/.gradle/caches/transforms-2/files-2.1/dd7dfafbb0af41b4347f18654ea5c436/flipper-fresco-plugin-0.54.0/AndroidManifest.xml:8:1-15:12
+MERGED from [androidx.multidex:multidex:2.0.0] /home/naz/.gradle/caches/transforms-2/files-2.1/d8031ba7ad89eac391d4216992656ff2/multidex-2.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [:react-native-community_masked-view] /home/naz/hamsa/node_modules/@react-native-community/masked-view/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:react-native-gesture-handler] /home/naz/hamsa/node_modules/react-native-gesture-handler/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-reanimated] /home/naz/hamsa/node_modules/react-native-reanimated/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [:react-native-rsa-native] /home/naz/hamsa/node_modules/react-native-rsa-native/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-safe-area-context] /home/naz/hamsa/node_modules/react-native-safe-area-context/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:react-native-screens] /home/naz/hamsa/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [:react-native-sensitive-info] /home/naz/hamsa/node_modules/react-native-sensitive-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-14:12
 MERGED from [:react-native-vector-icons] /home/naz/hamsa/node_modules/react-native-vector-icons/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
-MERGED from [com.facebook.react:react-native:0.63.3] /home/naz/.gradle/caches/transforms-2/files-2.1/fbb2937c35db8c537081b05eed38dc87/jetified-react-native-0.63.3/AndroidManifest.xml:2:1-13:12
+MERGED from [com.facebook.react:react-native:0.63.4] /home/naz/.gradle/caches/transforms-2/files-2.1/d397ce783e2c9c1e0ded6f9db92391ea/jetified-react-native-0.63.4/AndroidManifest.xml:2:1-13:12
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/naz/.gradle/caches/transforms-2/files-2.1/37b6f551bc5ae153b0b627de8f563815/swiperefreshlayout-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [org.webkit:android-jsc:r245459] /home/naz/.gradle/caches/transforms-2/files-2.1/6dd6245206e34676e1ee3aa6ee0f68c9/android-jsc-r245459/AndroidManifest.xml:2:1-11:12
 MERGED from [com.facebook.fresco:flipper:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/40741ffe3de6a11d99116b4e82d60d46/flipper-2.2.0/AndroidManifest.xml:2:1-9:12
@@ -33,6 +36,7 @@ MERGED from [com.facebook.fresco:imagepipeline-base:2.2.0] /home/naz/.gradle/cac
 MERGED from [com.facebook.fresco:soloader:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/65f592cbf7e10992754db73be6c6ba25/soloader-2.2.0/AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.soloader:soloader:0.9.0] /home/naz/.gradle/caches/transforms-2/files-2.1/c34148f30cbc3e974eff21cbfb6a112a/soloader-0.9.0/AndroidManifest.xml:2:1-13:12
 MERGED from [com.google.android.material:material:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/863e0c3c6716935cd3657ad638fd992d/material-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:17:1-34:12
 MERGED from [androidx.appcompat:appcompat:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/b1b165607eae60d70e4267b97e24514b/appcompat-resources-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/28888a6f6660db47b3788df392c672a7/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
@@ -59,7 +63,7 @@ MERGED from [androidx.savedstate:savedstate:1.0.0] /home/naz/.gradle/caches/tran
 MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /home/naz/.gradle/caches/transforms-2/files-2.1/4da6ddd3c71dbaec92b0fdf3bbca4ce7/lifecycle-livedata-2.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/2ef959591ee3dfd7e7d0f130ebacb270/lifecycle-livedata-core-2.2.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.arch.core:core-runtime:2.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/babedcb26ba2505096ea9fb87ec93180/core-runtime-2.1.0/AndroidManifest.xml:17:1-24:12
-MERGED from [com.facebook.fresco:fbcore:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/05f96f490cf518a455948182f764e2ec/jetified-fbcore-2.2.0/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.fresco:fbcore:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/baf589775ce9a44af5fd452d684b5c07/jetified-fbcore-2.2.0/AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.fresco:ui-common:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/c114d4501470930b3986c4f9bd2da0fd/ui-common-2.2.0/AndroidManifest.xml:2:1-9:12
 INJECTED from /home/naz/hamsa/android/app/src/debug/AndroidManifest.xml:2:1-8:12
 INJECTED from /home/naz/hamsa/android/app/src/debug/AndroidManifest.xml:2:1-8:12
@@ -91,12 +95,14 @@ application
 ADDED from /home/naz/hamsa/android/app/src/main/AndroidManifest.xml:6:5-25:19
 MERGED from /home/naz/hamsa/android/app/src/main/AndroidManifest.xml:6:5-25:19
 MERGED from /home/naz/hamsa/android/app/src/main/AndroidManifest.xml:6:5-25:19
-MERGED from [com.facebook.react:react-native:0.63.3] /home/naz/.gradle/caches/transforms-2/files-2.1/fbb2937c35db8c537081b05eed38dc87/jetified-react-native-0.63.3/AndroidManifest.xml:11:5-20
-MERGED from [com.facebook.react:react-native:0.63.3] /home/naz/.gradle/caches/transforms-2/files-2.1/fbb2937c35db8c537081b05eed38dc87/jetified-react-native-0.63.3/AndroidManifest.xml:11:5-20
+MERGED from [com.facebook.react:react-native:0.63.4] /home/naz/.gradle/caches/transforms-2/files-2.1/d397ce783e2c9c1e0ded6f9db92391ea/jetified-react-native-0.63.4/AndroidManifest.xml:11:5-20
+MERGED from [com.facebook.react:react-native:0.63.4] /home/naz/.gradle/caches/transforms-2/files-2.1/d397ce783e2c9c1e0ded6f9db92391ea/jetified-react-native-0.63.4/AndroidManifest.xml:11:5-20
 MERGED from [com.facebook.soloader:soloader:0.9.0] /home/naz/.gradle/caches/transforms-2/files-2.1/c34148f30cbc3e974eff21cbfb6a112a/soloader-0.9.0/AndroidManifest.xml:11:5-20
 MERGED from [com.facebook.soloader:soloader:0.9.0] /home/naz/.gradle/caches/transforms-2/files-2.1/c34148f30cbc3e974eff21cbfb6a112a/soloader-0.9.0/AndroidManifest.xml:11:5-20
 MERGED from [com.google.android.material:material:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/863e0c3c6716935cd3657ad638fd992d/material-1.1.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/863e0c3c6716935cd3657ad638fd992d/material-1.1.0/AndroidManifest.xml:22:5-20
+MERGED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:27:5-32:19
+MERGED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:27:5-32:19
 MERGED from [androidx.core:core:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/639e914bfc1efa21e36199d3ff2c5eef/core-1.1.0/AndroidManifest.xml:24:5-89
 MERGED from [androidx.core:core:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/639e914bfc1efa21e36199d3ff2c5eef/core-1.1.0/AndroidManifest.xml:24:5-89
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/2786c84c1e653e40bd67508414ca298f/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
@@ -163,20 +169,26 @@ MERGED from [com.facebook.flipper:flipper-network-plugin:0.54.0] /home/naz/.grad
 MERGED from [com.facebook.flipper:flipper-network-plugin:0.54.0] /home/naz/.gradle/caches/transforms-2/files-2.1/bd2cab46fd45b530a274001375333ead/flipper-network-plugin-0.54.0/AndroidManifest.xml:11:5-13:41
 MERGED from [com.facebook.flipper:flipper-fresco-plugin:0.54.0] /home/naz/.gradle/caches/transforms-2/files-2.1/dd7dfafbb0af41b4347f18654ea5c436/flipper-fresco-plugin-0.54.0/AndroidManifest.xml:11:5-13:41
 MERGED from [com.facebook.flipper:flipper-fresco-plugin:0.54.0] /home/naz/.gradle/caches/transforms-2/files-2.1/dd7dfafbb0af41b4347f18654ea5c436/flipper-fresco-plugin-0.54.0/AndroidManifest.xml:11:5-13:41
+MERGED from [androidx.multidex:multidex:2.0.0] /home/naz/.gradle/caches/transforms-2/files-2.1/d8031ba7ad89eac391d4216992656ff2/multidex-2.0.0/AndroidManifest.xml:20:5-43
+MERGED from [androidx.multidex:multidex:2.0.0] /home/naz/.gradle/caches/transforms-2/files-2.1/d8031ba7ad89eac391d4216992656ff2/multidex-2.0.0/AndroidManifest.xml:20:5-43
 MERGED from [:react-native-community_masked-view] /home/naz/hamsa/node_modules/@react-native-community/masked-view/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-community_masked-view] /home/naz/hamsa/node_modules/@react-native-community/masked-view/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-gesture-handler] /home/naz/hamsa/node_modules/react-native-gesture-handler/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-gesture-handler] /home/naz/hamsa/node_modules/react-native-gesture-handler/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-reanimated] /home/naz/hamsa/node_modules/react-native-reanimated/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-reanimated] /home/naz/hamsa/node_modules/react-native-reanimated/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-rsa-native] /home/naz/hamsa/node_modules/react-native-rsa-native/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-rsa-native] /home/naz/hamsa/node_modules/react-native-rsa-native/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-safe-area-context] /home/naz/hamsa/node_modules/react-native-safe-area-context/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-safe-area-context] /home/naz/hamsa/node_modules/react-native-safe-area-context/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-screens] /home/naz/hamsa/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-screens] /home/naz/hamsa/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-sensitive-info] /home/naz/hamsa/node_modules/react-native-sensitive-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-sensitive-info] /home/naz/hamsa/node_modules/react-native-sensitive-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-vector-icons] /home/naz/hamsa/node_modules/react-native-vector-icons/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-vector-icons] /home/naz/hamsa/node_modules/react-native-vector-icons/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [com.facebook.react:react-native:0.63.3] /home/naz/.gradle/caches/transforms-2/files-2.1/fbb2937c35db8c537081b05eed38dc87/jetified-react-native-0.63.3/AndroidManifest.xml:7:5-9:41
-MERGED from [com.facebook.react:react-native:0.63.3] /home/naz/.gradle/caches/transforms-2/files-2.1/fbb2937c35db8c537081b05eed38dc87/jetified-react-native-0.63.3/AndroidManifest.xml:7:5-9:41
+MERGED from [com.facebook.react:react-native:0.63.4] /home/naz/.gradle/caches/transforms-2/files-2.1/d397ce783e2c9c1e0ded6f9db92391ea/jetified-react-native-0.63.4/AndroidManifest.xml:7:5-9:41
+MERGED from [com.facebook.react:react-native:0.63.4] /home/naz/.gradle/caches/transforms-2/files-2.1/d397ce783e2c9c1e0ded6f9db92391ea/jetified-react-native-0.63.4/AndroidManifest.xml:7:5-9:41
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/naz/.gradle/caches/transforms-2/files-2.1/37b6f551bc5ae153b0b627de8f563815/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/naz/.gradle/caches/transforms-2/files-2.1/37b6f551bc5ae153b0b627de8f563815/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [org.webkit:android-jsc:r245459] /home/naz/.gradle/caches/transforms-2/files-2.1/6dd6245206e34676e1ee3aa6ee0f68c9/android-jsc-r245459/AndroidManifest.xml:7:5-9:41
@@ -213,6 +225,8 @@ MERGED from [com.facebook.soloader:soloader:0.9.0] /home/naz/.gradle/caches/tran
 MERGED from [com.facebook.soloader:soloader:0.9.0] /home/naz/.gradle/caches/transforms-2/files-2.1/c34148f30cbc3e974eff21cbfb6a112a/soloader-0.9.0/AndroidManifest.xml:7:5-9:41
 MERGED from [com.google.android.material:material:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/863e0c3c6716935cd3657ad638fd992d/material-1.1.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.material:material:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/863e0c3c6716935cd3657ad638fd992d/material-1.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.appcompat:appcompat:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.appcompat:appcompat:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/b1b165607eae60d70e4267b97e24514b/appcompat-resources-1.1.0/AndroidManifest.xml:20:5-22:41
@@ -265,8 +279,8 @@ MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /home/naz/.gradle
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/2ef959591ee3dfd7e7d0f130ebacb270/lifecycle-livedata-core-2.2.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.arch.core:core-runtime:2.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/babedcb26ba2505096ea9fb87ec93180/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.arch.core:core-runtime:2.1.0] /home/naz/.gradle/caches/transforms-2/files-2.1/babedcb26ba2505096ea9fb87ec93180/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [com.facebook.fresco:fbcore:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/05f96f490cf518a455948182f764e2ec/jetified-fbcore-2.2.0/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:fbcore:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/05f96f490cf518a455948182f764e2ec/jetified-fbcore-2.2.0/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:fbcore:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/baf589775ce9a44af5fd452d684b5c07/jetified-fbcore-2.2.0/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:fbcore:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/baf589775ce9a44af5fd452d684b5c07/jetified-fbcore-2.2.0/AndroidManifest.xml:5:5-7:41
 MERGED from [com.facebook.fresco:ui-common:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/c114d4501470930b3986c4f9bd2da0fd/ui-common-2.2.0/AndroidManifest.xml:5:5-7:41
 MERGED from [com.facebook.fresco:ui-common:2.2.0] /home/naz/.gradle/caches/transforms-2/files-2.1/c114d4501470930b3986c4f9bd2da0fd/ui-common-2.2.0/AndroidManifest.xml:5:5-7:41
 INJECTED from /home/naz/hamsa/android/app/src/debug/AndroidManifest.xml
@@ -285,3 +299,23 @@ uses-permission#android.permission.ACCESS_WIFI_STATE
 ADDED from [com.facebook.flipper:flipper:0.54.0] /home/naz/.gradle/caches/transforms-2/files-2.1/1c7787ec82631e0394972c76bdabe608/flipper-0.54.0/AndroidManifest.xml:16:5-76
 	android:name
 		ADDED from [com.facebook.flipper:flipper:0.54.0] /home/naz/.gradle/caches/transforms-2/files-2.1/1c7787ec82631e0394972c76bdabe608/flipper-0.54.0/AndroidManifest.xml:16:22-73
+uses-permission#android.permission.USE_BIOMETRIC
+ADDED from [:react-native-sensitive-info] /home/naz/hamsa/node_modules/react-native-sensitive-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-72
+MERGED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:24:5-72
+MERGED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:24:5-72
+	android:name
+		ADDED from [:react-native-sensitive-info] /home/naz/hamsa/node_modules/react-native-sensitive-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:22-69
+uses-permission#android.permission.USE_FINGERPRINT
+ADDED from [:react-native-sensitive-info] /home/naz/hamsa/node_modules/react-native-sensitive-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:5-74
+MERGED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:25:5-74
+MERGED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:25:5-74
+	android:name
+		ADDED from [:react-native-sensitive-info] /home/naz/hamsa/node_modules/react-native-sensitive-info/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:22-71
+activity#androidx.biometric.DeviceCredentialHandlerActivity
+ADDED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:28:9-31:67
+	android:exported
+		ADDED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:30:13-36
+	android:theme
+		ADDED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:31:13-64
+	android:name
+		ADDED from [androidx.biometric:biometric:1.0.1] /home/naz/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/AndroidManifest.xml:29:13-78

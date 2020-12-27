@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="hamsa/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hamsa.iml" filepath="$PROJECT_DIR$/.idea/modules/hamsa.iml" group="hamsa" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1249723049/react-native-vector-icons.iml" filepath="$PROJECT_DIR$/.idea/modules/1249723049/react-native-vector-icons.iml" group="hamsa/react-native-vector-icons" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hamsa.iml" filepath="$PROJECT_DIR$/.idea/modules/hamsa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/hamsa.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/hamsa.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-238447670/hamsa.react-native-community_masked-view.iml" filepath="$PROJECT_DIR$/.idea/modules/-238447670/hamsa.react-native-community_masked-view.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-102203315/hamsa.react-native-gesture-handler.iml" filepath="$PROJECT_DIR$/.idea/modules/-102203315/hamsa.react-native-gesture-handler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-703176273/hamsa.react-native-reanimated.iml" filepath="$PROJECT_DIR$/.idea/modules/-703176273/hamsa.react-native-reanimated.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1218230646/hamsa.react-native-safe-area-context.iml" filepath="$PROJECT_DIR$/.idea/modules/1218230646/hamsa.react-native-safe-area-context.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1426762482/hamsa.react-native-screens.iml" filepath="$PROJECT_DIR$/.idea/modules/-1426762482/hamsa.react-native-screens.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1249723049/hamsa.react-native-vector-icons.iml" filepath="$PROJECT_DIR$/.idea/modules/1249723049/hamsa.react-native-vector-icons.iml" />
     </modules>
   </component>
 </project>

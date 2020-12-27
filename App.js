@@ -6,13 +6,14 @@ import { DefaultTheme, Provider as PaperProvider, Text } from 'react-native-pape
 import Home from "./screens/home";
 import Login from "./screens/login";
 import Register from "./screens/register";
+import Activate from './screens/activate';
 
 const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#4C4981',
-    // accent: 'palevioletred',
+    primary: '#504469',
+    accent: '#0B040B',
   },
 };
 
@@ -24,6 +25,7 @@ const App = () => (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="home" component={Home} />
         <Stack.Screen name="register" component={Register} />
+        <Stack.Screen name="activate" component={Activate} />
         <Stack.Screen name="login" component={Login} />
       </Stack.Navigator>
     </NavigationContainer>

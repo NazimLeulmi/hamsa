@@ -1,56 +1,69 @@
 import React from 'react';
-import { TextInput, Button, Headline, Text } from "react-native-paper";
+import { TextInput, Button, Headline } from "react-native-paper";
+import { TouchableOpacity } from "react-native";
 import styled from "styled-components";
 
 
-
-const Logo = styled.Image`
+export const Logo = styled.Image`
   height:125px;
   width:125px;
   left:50%;
   transform:translateX(-62.5px);
   margin:50px 0;
 `;
-const Form = styled.ScrollView`
+export const Form = styled.ScrollView`
   background-color:#F3E9DC;
   flex:1;
   padding:15px;
+  position:relative;
 `;
-const Btn = styled(Button)`
+export const Btn = styled(TouchableOpacity)`
   padding:10px;
   margin-top:6px;
+  background:#504469;
+  align-items:center;
+  justify-content:center;
+  height:56px;
+  border:0;
 `
-const Header = styled(Headline)`
-  color:#4C4981;
+export const BtnText = styled.Text`
+  color:#F3E9DC;
+  font-size:16px;
+`;
+export const Header = styled(Headline)`
+  color:#504469;
   font-weight:200;
   font-size:26px;
 `;
-const Link = styled(Button)`
+export const Link = styled(Button)`
   padding:10px;
   margin-top:6px;
+  margin-bottom:75px;
 `;
-const LinkTxt = styled.Text`
-  color:#4C4981;
+export const LinkTxt = styled.Text`
+  color:#504469;
   font-weight:bold;
 `;
-const Txt = styled.Text`
+export const Txt = styled.Text`
   font-weight:200;
 `;
 function Login({ navigation }) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   return (
-    <Form >
+    <Form contentContainerStyle={{ justifyContent: 'flex-start' }}>
       <Logo source={require("../assets/whisper.png")} />
       <TextInput
         label="Email" value={email}
         onChangeText={email => setEmail(email)} mode="outlined"
       />
       <TextInput
-        label="Password" value={password}
+        label="Password" value={password} secureTextEntry
         onChangeText={password => setPassword(password)} mode="outlined"
       />
-      <Btn mode="contained" onPress={() => console.log("LOGIN")}>LOGIN</Btn>
+      <Btn mode="contained" onPress={() => console.log("LOGIN")}>
+        <BtnText>LOGIN</BtnText>
+      </Btn>
       <Link onPress={() => navigation.navigate("register")}>
         <Txt>Not a member ? </Txt><LinkTxt>Join now</LinkTxt>
       </Link>
