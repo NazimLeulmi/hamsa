@@ -6,19 +6,18 @@ async function main(email, link) {
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
       host: "mail.nazimleulmi.com",
-      port: 587,
-      secure: false, // true for 465, false for other ports
+      secure: true,
       auth: {
-        user: 'naz@nazimleulmi.com',
-        pass: 'baqlawa',
+        user: 'hamsa@nazimleulmi.com',
+        pass: 'a password',
       },
     });
 
     // send mail with defined transport object
     transporter.sendMail({
-      from: '"HAMSA 👻" <naz@nazimleulmi.com>',
+      from: '"HAMSA 👻" <hamsa@nazimleulmi.com>',
       to: email,
-      subject: "Account Activision", // Subject line
+      subject: "Account Activision",
       html: `
     <p> Click on this link to activate your account : </p>
     <a href="${link}">Activision Link</a>

@@ -6,11 +6,7 @@ import axios from 'axios';
 import { RSA } from 'react-native-rsa-native';
 import keyChain from 'react-native-sensitive-info';
 
-
-
-
-
-const Alert = styled(Snackbar)`
+export const Alert = styled(Snackbar)`
   background-color:#FD708D;
   color:#F3E9DC;
   display:flex;
@@ -31,7 +27,7 @@ function Register({ navigation }) {
     setAlert(false);
     setLoading(true);
     const cryptoKeys = await RSA.generateKeys(4096);
-    axios.post('http://192.168.177.93:3000/signUp',
+    axios.post('http://192.168.61.93:3000/signUp',
       { name, email, password, passwordc, publicKey: cryptoKeys.public })
       .then(async function (response) {
         if (response.data.error) {
@@ -39,7 +35,7 @@ function Register({ navigation }) {
           setAlert(true);
         }
         if (response.data.success) {
-          const saved = await keyChain.setItem("private", cryptoKeys.private, {
+          const saved = await keyChain.setItem(email, cryptoKeys.private, {
             keychainService: 'private',
             sharedPreferencesName: 'private'
           });
@@ -56,11 +52,11 @@ function Register({ navigation }) {
     <Form >
       <Logo source={require("../assets/whisper.png")} />
       <TextInput
-        label="Name" value={name}
+        label="Name" value={name} autoCompleteType="off" autoCorrect={false}
         onChangeText={name => setName(name)} mode="outlined"
       />
       <TextInput
-        label="Email" value={email} required
+        label="Email" value={email} autoCompleteType="off" autoCorrect={false}
         onChangeText={email => setEmail(email)} mode="outlined"
       />
       <TextInput

@@ -1,8 +1,9 @@
 import React from 'react';
-import { TextInput, Button, Headline } from "react-native-paper";
+import { TextInput, Button, Headline, ActivityIndicator } from "react-native-paper";
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components";
-
+import axios from 'axios';
+import { Alert } from "./register";
 
 export const Logo = styled.Image`
   height:125px;
@@ -50,23 +51,53 @@ export const Txt = styled.Text`
 function Login({ navigation }) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [error, setError] = React.useState('');
+  const [alert, setAlert] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
+  function toggleAlert() { setAlert(!alert) };
+  async function submitForm() {
+    setAlert(false);
+    setLoading(true);
+    axios.post('http://192.168.61.93:3000/signIn', { email, password },
+      { withCredentials: true })
+      .then(async function (response) {
+        if (response.data.error) {
+          setError(response.data.error);
+          setAlert(true);
+        }
+        if (response.data.success) {
+          navigation.push('tabs');
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+    setLoading(false);
+  }
   return (
     <Form contentContainerStyle={{ justifyContent: 'flex-start' }}>
       <Logo source={require("../assets/whisper.png")} />
       <TextInput
-        label="Email" value={email}
+        label="Email" value={email} autoCorrect={false}
         onChangeText={email => setEmail(email)} mode="outlined"
       />
       <TextInput
         label="Password" value={password} secureTextEntry
         onChangeText={password => setPassword(password)} mode="outlined"
       />
-      <Btn mode="contained" onPress={() => console.log("LOGIN")}>
+      <Btn mode="contained" onPress={submitForm} disabled={loading}>
         <BtnText>LOGIN</BtnText>
       </Btn>
       <Link onPress={() => navigation.navigate("register")}>
         <Txt>Not a member ? </Txt><LinkTxt>Join now</LinkTxt>
       </Link>
+      <Alert visible={alert} onDismiss={toggleAlert} duration={4000}
+        action={{ label: 'X', onPress: () => setAlert(!alert) }}
+      >
+        {error}
+      </Alert>
+      {loading ? <ActivityIndicator animating={true} color="#504469" /> : null}
     </Form>
   )
 }

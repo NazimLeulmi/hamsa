@@ -7,9 +7,12 @@ import Home from "./screens/home";
 import Login from "./screens/login";
 import Register from "./screens/register";
 import Activate from './screens/activate';
+import Tabs from './screens/tabs';
 
 const theme = {
   ...DefaultTheme,
+  roundness: 2,
+  dark: true,
   colors: {
     ...DefaultTheme.colors,
     primary: '#504469',
@@ -27,6 +30,7 @@ const App = () => (
         <Stack.Screen name="register" component={Register} />
         <Stack.Screen name="activate" component={Activate} />
         <Stack.Screen name="login" component={Login} />
+        <Stack.Screen name="tabs" component={Tabs} />
       </Stack.Navigator>
     </NavigationContainer>
   </PaperProvider>
