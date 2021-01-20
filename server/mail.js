@@ -9,7 +9,7 @@ async function main(email, link) {
       secure: true,
       auth: {
         user: 'hamsa@nazimleulmi.com',
-        pass: 'a password',
+        pass: 'yourpassword',
       },
     });
 

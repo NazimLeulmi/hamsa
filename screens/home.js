@@ -51,9 +51,11 @@ const Btn = styled(Button)`
 
 const Home = ({ navigation }) => {
   React.useEffect(() => {
-    axios.get('http://192.168.61.93:3000/checkAuth')
+    axios.get('http://192.168.2.97:3000/checkAuth')
       .then((response) => {
-        if (response.data.success) navigation.navigate("tabs");
+        if (response.data.user) {
+          navigation.push("tabs", { params: { usr: response.data.user }, screen: 'Groups' });
+        }
       });
   }, [])
   return (

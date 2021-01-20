@@ -1,15 +1,15 @@
 import React from 'react';
 import styled from "styled-components";
-import { Logo, BrandName, Brand, Header } from "./home";
+import { Logo, BrandName, Brand } from "./home";
 import {
-  FAB, Portal, Provider, TextInput, Chip, Snackbar,
-  Button, Dialog, HelperText, Surface, IconButton, Text
+  FAB, Portal, Provider, TextInput, Snackbar,
+  Button, Dialog, HelperText, Surface, IconButton
 } from 'react-native-paper';
 import { ScrollView, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from "axios";
-import { useFocusEffect } from '@react-navigation/native';
 import Clipboard from "@react-native-community/clipboard";
+import { UserContext } from '../globalState';
 
 
 export const Circle = styled.View`
@@ -74,33 +74,25 @@ export const Group = styled(Surface)`
 `;
 
 
-const Groups = ({ navigation }) => {
+const Groups = ({ navigation, route }) => {
   const [open, setOpen] = React.useState(false);
   const [dialog, setDialog] = React.useState(false);
   const [data, setData] = React.useState('');
   const [error, setError] = React.useState('');
   const [type, setType] = React.useState('error');
   const [create, setCreate] = React.useState(null);
-  const [groups, setGroups] = React.useState([]);
   const [copied, setCopied] = React.useState(false);
+  const { user, setUser } = React.useContext(UserContext);
 
 
-  async function getGroups() {
-    try {
-      console.log("Fetching Groups")
-      const response = await axios.get('http://192.168.61.93:3000/groups');
-      if (response.data.error) console.log(response.data.error);
-      setGroups(response.data.groups);
-    } catch (err) { console.log(err) }
-  }
-  useFocusEffect(
-    React.useCallback(() => {
-      getGroups();
-    }, [])
-  );
+  React.useEffect(() => {
+    const { usr } = route.params;
+    if (!usr) navigation.navigate("home");
+    setUser(usr);
+  }, [])
 
   async function submitForm() {
-    axios.post(`http://192.168.61.93:3000/${create ? "createGroup" : "joinGroup"}`, { data: data },
+    axios.post(`http://192.168.2.97:3000/${create ? "create" : "join"}Room`, { data: data },
       { withCredentials: true })
       .then(async function (response) {
         if (response.data.error) {
@@ -111,14 +103,19 @@ const Groups = ({ navigation }) => {
         setType("info");
         setError(create ? "The group has been created" :
           "Request has been sent to the group admin");
+        setUser({ ...user, groups: [...user.groups, response.data.group] })
         setTimeout(() => {
           setDialog(false); setError("");
-          setData(""); getGroups();
         }, 1000);
       })
       .catch(function (error) {
         console.log(error);
       })
+  }
+  async function leaveGroup() {
+
+  }
+  async function deleteGroup() {
   }
   return (
     <View style={{ width: '100%', height: '100%' }}>
@@ -134,8 +131,8 @@ const Groups = ({ navigation }) => {
           Copied to clipboard
         </Snackbar>
       </Brand>
-      <List contentContainerStyle={{ alignItems: "center" }}>
-        {groups.map(grp => (
+      {/* <List contentContainerStyle={{ alignItems: "center" }}>
+        {user ? user.groups.map(grp => (
           <Group style={{ elevation: 6 }} key={grp._id}>
             <SmallCircle><Icon name="group" size={35} color="#504469" /></SmallCircle>
             <GroupName>{grp.name}</GroupName>
@@ -144,13 +141,13 @@ const Groups = ({ navigation }) => {
               onPress={() => { Clipboard.setString(grp._id); setCopied(true) }}
               style={{ alignSelf: "flex-end", position: 'absolute' }}
             />
-            {grp.isAdmin ? <IconButton icon="delete" color="#FD708D" size={23}
-              onPress={() => console.log('Pressed')}
-              style={{ position: 'absolute', right: 30 }}
-            /> : null}
+            <IconButton color="#FD708D" size={23} style={{ position: 'absolute', right: 30 }}
+              onPress={grp.isAdmin ? deleteGroup : leaveGroup}
+              icon={grp.isAdmin ? "delete" : "trash-can"}
+            />
           </Group>
-        ))}
-      </List >
+        )) : null}
+      </List > */}
 
       <Provider>
         <Portal>

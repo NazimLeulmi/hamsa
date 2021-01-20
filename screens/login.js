@@ -1,9 +1,8 @@
 import React from 'react';
-import { TextInput, Button, Headline, ActivityIndicator } from "react-native-paper";
+import { TextInput, Button, Headline, ActivityIndicator, Snackbar } from "react-native-paper";
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components";
 import axios from 'axios';
-import { Alert } from "./register";
 
 export const Logo = styled.Image`
   height:125px;
@@ -48,6 +47,14 @@ export const LinkTxt = styled.Text`
 export const Txt = styled.Text`
   font-weight:200;
 `;
+const Alert = styled(Snackbar)`
+  background-color:#FD708D;
+  color:#F3E9DC;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+`;
+
 function Login({ navigation }) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -59,15 +66,16 @@ function Login({ navigation }) {
   async function submitForm() {
     setAlert(false);
     setLoading(true);
-    axios.post('http://192.168.61.93:3000/signIn', { email, password },
+    axios.post('http://192.168.2.97:3000/signIn', { email, password },
       { withCredentials: true })
       .then(async function (response) {
         if (response.data.error) {
           setError(response.data.error);
           setAlert(true);
+          return
         }
-        if (response.data.success) {
-          navigation.push('tabs');
+        if (response.data.user) {
+          navigation.push("tabs", { params: { usr: response.data.user }, screen: 'Groups' });
         }
       })
       .catch(function (error) {

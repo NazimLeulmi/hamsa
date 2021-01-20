@@ -11,6 +11,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { not } from 'react-native-reanimated';
+import { UserContext } from '../globalState';
 
 export const List = styled(ScrollView)`
     position:relative;
@@ -19,35 +20,38 @@ export const List = styled(ScrollView)`
 `;
 
 const Notifications = ({ navigation }) => {
-  const [notifications, setNot] = React.useState([]);
   const [dialog, setDialog] = React.useState(false);
   const [current, setCurrent] = React.useState({});
+  const { user, setUser } = React.useContext(UserContext);
+  let nots = user.notifications;
 
-  async function getNotifications() {
-    try {
-      console.log("Fetching Notifcations")
-      const response = await axios.get('http://192.168.61.93:3000/notifications');
-      if (response.data.error) return console.log(response.data.error);
-      console.log(response.data.notifications)
-      setNot(response.data.notifications);
-    } catch (err) { console.log(err) }
+  function acceptReq() {
+    axios.post('http://192.168.2.97:3000/acceptReq',
+      { groupId: current.groupId, member: current.from },
+      { withCredentials: true })
+      .then(async function (response) {
+        if (response.data.error) {
+          console.log(response.data.error);
+          return;
+        }
+        setDialog(false);
+        console.log(response.data.index, "index");
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
   }
-  useFocusEffect(
-    React.useCallback(() => {
-      getNotifications();
-    }, [])
-  );
   return (
     <List contentContainerStyle={{ alignItems: "center" }}>
       <Brand style={{ backgroundColor: "#D49496", marginBottom: 10, width: '100%' }}>
         <Circle><Logo source={require("../assets/whisper.png")} /></Circle>
         <BrandName style={{ color: "white" }}>Notifications</BrandName>
       </Brand>
-      {notifications.length !== 0 ? notifications.map(not => (
+      {nots.length !== 0 ? nots.map(not => (
         <Notification style={{ elevation: 6, width: "95%" }} key={not._id}>
           <SmallCircle><Icon name="notifications" size={35} color="#D49496" /></SmallCircle>
           <GroupName>{not.name}</GroupName>
-          <GroupId>{not.from}</GroupId>
+          <GroupId>{not.groupId}</GroupId>
           <IconButton icon="account-check" color="#504469" size={23}
             onPress={() => { setCurrent(not); setDialog(true) }}
             style={{ alignSelf: "flex-end", position: 'absolute' }}
@@ -65,7 +69,7 @@ const Notifications = ({ navigation }) => {
             <Text>{current.name} requests to join {current.groupName}</Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setDialog(false)}>APPROVE</Button>
+            <Button onPress={acceptReq}>APPROVE</Button>
             <Button onPress={() => setDialog(false)}>CANCEL</Button>
           </Dialog.Actions>
         </Dialog>
