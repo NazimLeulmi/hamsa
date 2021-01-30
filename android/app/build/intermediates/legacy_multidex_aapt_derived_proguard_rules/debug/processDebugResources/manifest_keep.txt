@@ -1,4 +1,0 @@
-# Referenced at /home/naz/hamsa/android/app/build/intermediates/merged_manifests/debug/AndroidManifest.xml:17
--keep class androidx.core.app.CoreComponentFactory { <init>(); }
-# Referenced at /home/naz/hamsa/android/app/build/intermediates/merged_manifests/debug/AndroidManifest.xml:17
--keep class com.hamsa.MainApplication { <init>(); }
