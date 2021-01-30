@@ -1,15 +1,25 @@
-const express = require('express');
-const router = express.Router();
+let express = require('express');
+let body = require('express-validator').body;
+let validationResult = require('express-validator').validationResult;
+let compare = require('bcrypt').compare;
+let router = express.Router();
+let UserModel = require('./models').UserModel;
 
 // // CHECK AUTH GET ROUTE
-app.get("/checkAuth", async (req, res) => {
-  if (!req.session.userId) return res.json({ success: false });
-  let q = 'SELECT * FROM users WHERE id=?';
-  db.query(q, req.session.userId, async (err, results) => {
-    if (err) throw err;
-    if (results.length === 0) return res.json({ auth: false });
-    return res.json({ user: results[0] })
-  })
+router.get("/checkAuth", async (req, res) => {
+  try {
+    if (!req.session.userId) return res.json({ success: false });
+    let user = await UserModel.findById(req.session.userId).populate({
+      path: 'rooms',
+      populate: {
+        path: 'chat',
+        model: 'Message'
+      }
+    });
+    if (!user) return res.json({ success: false });
+    return res.json({ user })
+  } catch (err) { console.log(err) }
 })
 
 
+module.exports = router;

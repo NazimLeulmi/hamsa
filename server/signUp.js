@@ -1,11 +1,16 @@
-const express = require('express');
-const router = express.Router();
-
+let express = require('express');
+let body = require('express-validator').body;
+let hash = require('bcrypt').hash;
+let randomBytes = require('crypto').randomBytes;
+let sendMail = require("./mail");
+let validationResult = require('express-validator').validationResult;
+let router = express.Router();
+let UserModel = require('./models').UserModel;
 
 router.post('/signUp', [
   body('name').notEmpty().withMessage("The name is required to submit the form")
     .isAlphanumeric().withMessage("The name must be alphanumeric")
-    .isLength({ min: 5, max: 30 }).withMessage("The name must be 5~30 characters"),
+    .isLength({ min: 5, max: 30 }).withMessage("The name must be 5~25 characters"),
   body('email').notEmpty().withMessage("The email is required to submit the form")
     .isLength({ min: 8, max: 50 }).withMessage("The email must be 8~50 characters")
     .isEmail().withMessage("The email is invalid")
@@ -15,32 +20,23 @@ router.post('/signUp', [
     .isLength({ min: 8, max: 100 }).withMessage("The password must be 8~100 characters")
     .custom((value, { req }) => value === req.body.passwordc).withMessage("password confirmation doesn't match")
 ], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.json({ error: errors.array()[0].msg });
-  }
-  let q = `SELECT * FROM users WHERE email=?`
-  db.query(q, req.body.email, async (err, results) => {
-    if (err) throw err;
-    if (results.length !== 0) {
-      return res.json({ error: "The email address is taken" });
-    }
-    const hashed = await hash(req.body.password, 10);
-    const buffer = await randomBytes(48);
-    const token = buffer.toString('hex');
-    const user = {
-      name: req.body.name, password: hashed, activision_token: token,
-      email: req.body.email, public_key: req.body.publicKey
-    }
-    q = `INSERT INTO users SET ?`;
-    db.query(q, user, (err, results) => {
-      if (err) throw err;
+  try {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) return res.json({ error: errors.array()[0].msg });
+    let user = await UserModel.findOne({ email: req.body.email });
+    if (user) return res.json({ error: "The email address is taken" });
+    let hashed = await hash(req.body.password, 10);
+    let buffer = await randomBytes(48);
+    let token = buffer.toString('hex');
+    user = new UserModel({
+      name: req.body.name, email: req.body.email, pass: hashed,
+      key: req.body.publicKey, token: token,
     })
-    await sendMail(user.email,
-      `http://192.168.2.97:3000/activate/${user.activision_token}`)
-    return res.json({ success: true, token: user.activision_token })
-  })
-
+    let userSaved = await user.save();
+    console.log(userSaved);
+    let url = 'http://192.168.2.97:3000/activate/' + token
+    let mailres = await sendMail(req.body.email, url);
+    return res.json({ success: true })
+  } catch (err) { throw err }
 })
-
 module.exports = router;

@@ -1,33 +1,34 @@
-const express = require('express');
-const router = express.Router();
+let express = require('express');
+let body = require('express-validator').body;
+let validationResult = require('express-validator').validationResult;
+let router = express.Router();
+let UserModel = require('./models').UserModel;
+let RoomModel = require('./models').RoomModel;
 
-// // CREATE A GROUP RESTRICTED POST ROUTE
-app.post("/createRoom", [
+router.post("/createRoom", [
   body('data').notEmpty().withMessage("The room name is required to create a room")
     .isAlphanumeric().withMessage("The room name must be alphanumeric")
     .isLength({ min: 5, max: 30 }).withMessage("The room name must be 5~30 characters"),
 ], async (req, res) => {
   try {
-    const errors = validationResult(req);
+    console.log(req.session.userId, "CREATING ROOM");
+    let errors = validationResult(req);
     if (!req.session.userId) return res.json({ error: "Restricted route" });
     if (!errors.isEmpty()) return res.json({ error: errors.array()[0].msg });
-    let q = 'SELECT * FROM users WHERE id=?';
-    db.query(q, req.session.userId, async (err, results) => {
-      if (err) throw err;
-      if (results.length === 0) res.json({ error: "Restricted route" })
-      const room = { name: req.body.data, admin: results[0].id, created: Date.now() };
-      q = 'INSERT INTO rooms SET ?';
-      db.query(q, room, async (error, insertResult) => {
-        if (error) throw error;
-        console.log(insertResult);
-        let userRooms = { room: insertResult.insertId, user: results[0].id }
-        let query = 'INSERT into user_rooms SET ?'
-        db.query(query, userRooms, async (e, res) => {
-          if (e) throw e;
-          return res.json(res);
-        })
-      })
+    let user = await UserModel.findById(req.session.userId);
+    if (!user) res.json({ error: "Restricted route" })
+    let room = new RoomModel({
+      name: req.body.data,
+      admin: user._id,
+      users: [user._id]
     })
 
+    let roomSaved = await room.save();
+    user.rooms.push(roomSaved._id);
+    let userSaved = await user.save();
+    console.log(roomSaved);
+    return res.json({ room: roomSaved })
   } catch (err) { console.log(err) }
 })
+
+module.exports = router;
