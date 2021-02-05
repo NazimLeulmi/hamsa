@@ -16,6 +16,7 @@
     "express-validator": "^6.8.1",
     "mongoose": "^5.11.13",
     "nodemailer": "^6.4.17",
-    "socket.io": "^3.0.4"
+    "socket.io": "^3.0.4",
+    "validator": "^13.5.2"
   }
 }

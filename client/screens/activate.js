@@ -1,7 +1,6 @@
 import React from "react";
 import { Headline } from "react-native-paper";
 import styled from "styled-components";
-import { ScrollView } from "react-native";
 import { Btn, BtnText } from "./signIn";
 
 const Container = styled.View`

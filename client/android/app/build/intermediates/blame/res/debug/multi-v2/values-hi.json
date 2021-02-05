@@ -1,27 +1,27 @@
 {
     "logs": [
         {
-            "outputFile": "/home/dex/hamsa/client/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-hi/values-hi.xml",
+            "outputFile": "C:\\Users\\fox\\Desktop\\hamsa\\client\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-hi\\values-hi.xml",
             "map": [
                 {
-                    "source": "/home/dex/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/res/values-hi/values-hi.xml",
+                    "source": "C:\\Users\\fox\\.gradle\\caches\\transforms-2\\files-2.1\\639e914bfc1efa21e36199d3ff2c5eef\\core-1.1.0\\res\\values-hi\\values-hi.xml",
                     "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,186,304,394,511,642,774,919,1054,1207,1310",
-                        "endColumns": "130,117,89,116,130,131,144,134,152,102,133",
-                        "endOffsets": "181,299,389,506,637,769,914,1049,1202,1305,1439"
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
                     },
                     "to": {
-                        "startLines": "29,30,31,32,33,34,35,36,37,38,39",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "2787,2918,3036,3126,3243,3374,3506,3651,3786,3939,4042",
-                        "endColumns": "130,117,89,116,130,131,144,134,152,102,133",
-                        "endOffsets": "2913,3031,3121,3238,3369,3501,3646,3781,3934,4037,4171"
+                        "startLines": "41",
+                        "startColumns": "4",
+                        "startOffsets": "4257",
+                        "endColumns": "100",
+                        "endOffsets": "4353"
                     }
                 },
                 {
-                    "source": "/home/dex/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/res/values-hi/values-hi.xml",
+                    "source": "C:\\Users\\fox\\.gradle\\caches\\transforms-2\\files-2.1\\1cb9b9ea592aa2ea85233be252327dcf\\appcompat-1.1.0\\res\\values-hi\\values-hi.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -38,20 +38,20 @@
                     }
                 },
                 {
-                    "source": "/home/dex/.gradle/caches/transforms-2/files-2.1/639e914bfc1efa21e36199d3ff2c5eef/core-1.1.0/res/values-hi/values-hi.xml",
+                    "source": "C:\\Users\\fox\\.gradle\\caches\\transforms-2\\files-2.1\\6ec249d8ca5f46e13b5e5f400316b4ee\\biometric-1.0.1\\res\\values-hi\\values-hi.xml",
                     "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,186,304,394,511,642,774,919,1054,1207,1310",
+                        "endColumns": "130,117,89,116,130,131,144,134,152,102,133",
+                        "endOffsets": "181,299,389,506,637,769,914,1049,1202,1305,1439"
                     },
                     "to": {
-                        "startLines": "41",
-                        "startColumns": "4",
-                        "startOffsets": "4257",
-                        "endColumns": "100",
-                        "endOffsets": "4353"
+                        "startLines": "29,30,31,32,33,34,35,36,37,38,39",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "2787,2918,3036,3126,3243,3374,3506,3651,3786,3939,4042",
+                        "endColumns": "130,117,89,116,130,131,144,134,152,102,133",
+                        "endOffsets": "2913,3031,3121,3238,3369,3501,3646,3781,3934,4037,4171"
                     }
                 }
             ]

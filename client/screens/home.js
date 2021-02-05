@@ -53,7 +53,7 @@ const Btn = styled(Button)`
 const Home = ({ navigation }) => {
   let { user, setUser } = React.useContext(UserContext);
   React.useEffect(() => {
-    axios.get('http://192.168.2.97:3000/checkAuth')
+    axios.get('http://192.168.83.93:3000/checkAuth')
       .then((response) => {
         if (response.data.user) {
           setUser(response.data.user)

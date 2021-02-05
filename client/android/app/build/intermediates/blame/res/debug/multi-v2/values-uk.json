@@ -1,27 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/dex/hamsa/client/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-uk/values-uk.xml",
+            "outputFile": "C:\\Users\\fox\\Desktop\\hamsa\\client\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-uk\\values-uk.xml",
             "map": [
                 {
-                    "source": "/home/dex/.gradle/caches/transforms-2/files-2.1/6ec249d8ca5f46e13b5e5f400316b4ee/biometric-1.0.1/res/values-uk/values-uk.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,189,296,389,516,667,808,919,1046,1180,1279",
-                        "endColumns": "133,106,92,126,150,140,110,126,133,98,124",
-                        "endOffsets": "184,291,384,511,662,803,914,1041,1175,1274,1399"
-                    },
-                    "to": {
-                        "startLines": "29,30,31,32,33,34,35,36,37,38,39",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "2829,2963,3070,3163,3290,3441,3582,3693,3820,3954,4053",
-                        "endColumns": "133,106,92,126,150,140,110,126,133,98,124",
-                        "endOffsets": "2958,3065,3158,3285,3436,3577,3688,3815,3949,4048,4173"
-                    }
-                },
-                {
-                    "source": "/home/dex/.gradle/caches/transforms-2/files-2.1/639e914bfc1efa21e36199d3ff2c5eef/core-1.1.0/res/values-uk/values-uk.xml",
+                    "source": "C:\\Users\\fox\\.gradle\\caches\\transforms-2\\files-2.1\\639e914bfc1efa21e36199d3ff2c5eef\\core-1.1.0\\res\\values-uk\\values-uk.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -38,7 +21,24 @@
                     }
                 },
                 {
-                    "source": "/home/dex/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/res/values-uk/values-uk.xml",
+                    "source": "C:\\Users\\fox\\.gradle\\caches\\transforms-2\\files-2.1\\6ec249d8ca5f46e13b5e5f400316b4ee\\biometric-1.0.1\\res\\values-uk\\values-uk.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,189,296,389,516,667,808,919,1046,1180,1279",
+                        "endColumns": "133,106,92,126,150,140,110,126,133,98,124",
+                        "endOffsets": "184,291,384,511,662,803,914,1041,1175,1274,1399"
+                    },
+                    "to": {
+                        "startLines": "29,30,31,32,33,34,35,36,37,38,39",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "2829,2963,3070,3163,3290,3441,3582,3693,3820,3954,4053",
+                        "endColumns": "133,106,92,126,150,140,110,126,133,98,124",
+                        "endOffsets": "2958,3065,3158,3285,3436,3577,3688,3815,3949,4048,4173"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\fox\\.gradle\\caches\\transforms-2\\files-2.1\\1cb9b9ea592aa2ea85233be252327dcf\\appcompat-1.1.0\\res\\values-uk\\values-uk.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",

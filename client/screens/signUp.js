@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { RSA } from 'react-native-rsa-native';
 import keyChain from 'react-native-sensitive-info';
+import { validateSignUp } from './validation';
 
 const Alert = styled(Snackbar)`
   background-color:#FD708D;
@@ -28,15 +29,17 @@ function SignUp({ navigation }) {
   const btn = React.useRef(null);
 
   async function submitForm() {
-    setAlert(false);
-    setLoading(true);
+    let errors = validateSignUp(name, email, password, passwordc);
+    if (errors.length !== 0) {
+      setError(errors[0]); setAlert(true); return;
+    }
+    setAlert(false); setLoading(true);
     const cryptoKeys = await RSA.generateKeys(4096);
-    axios.post('http://192.168.2.97:3000/signUp',
+    axios.post('http://192.168.83.93:3000/signUp',
       { name, email, password, passwordc, publicKey: cryptoKeys.public })
       .then(async function (response) {
         if (response.data.error) {
-          setError(response.data.error);
-          setAlert(true);
+          setError(response.data.error); setAlert(true);
         }
         if (response.data.success) {
           const saved = await keyChain.setItem(email, cryptoKeys.private, {

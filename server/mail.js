@@ -8,8 +8,8 @@ async function main(email, link) {
       host: "mail.nazimleulmi.com",
       secure: true,
       auth: {
-        user: 'hamsa@nazimleulmi.com',
-        pass: 'Your Password',
+        user: "hamsa@nazimleulmi.com",
+        pass: "your Password",
       },
     });
 
@@ -28,9 +28,9 @@ async function main(email, link) {
     </p>
     `, // html body
     });
-  } catch (err) { console.log(err) }
+  } catch (err) {
+    console.log(err);
+  }
 }
 
-
 module.exports = main;
-

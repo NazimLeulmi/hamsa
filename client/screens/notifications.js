@@ -26,7 +26,7 @@ let Notifications = ({ navigation }) => {
 
 
   function acceptReq() {
-    axios.post('http://192.168.2.97:3000/acceptReq',
+    axios.post('http://192.168.83.93:3000/acceptReq',
       { roomId: current.roomId, member: current.from },
       { withCredentials: true })
       .then(async function (response) {

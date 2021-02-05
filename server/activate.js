@@ -1,21 +1,30 @@
-let express = require('express');
-let param = require('express-validator').param;
-let validationResult = require('express-validator').validationResult;
-let router = express.Router();
-let UserModel = require('./models').UserModel;
+let express = require("express");
+let isAlphanumeric = require("validator").isAlphanumeric;
+let isLength = require("validator").isLength;
+let isEmpty = require("validator").isEmpty;
 
+let UserModel = require("./models").UserModel;
+let router = express.Router();
+
+function validation(req, res, next) {
+  let token = req.params.token;
+  if (token === undefined || token === null || isEmpty(token)) {
+    return res.json({ error: "The token is required to activate the account" });
+  } else if (!isAlphanumeric(token)) {
+    return res.json({ error: "The token must be alphanumeric" });
+  } else if (!isLength(token, { min: 96, max: 96 })) {
+    return res.json({ error: "The token must be 96 characters" });
+  }
+  next();
+}
 
 // Activate User Account
-router.get('/activate/:token', [
-  param('token').notEmpty().withMessage("The token is required to activate the account")
-    .isAlphanumeric().withMessage("The token must be alphanumeric")
-    .isLength({ min: 96, max: 96 }).withMessage("Invalid token"),
-], async (req, res) => {
+router.get("/activate/:token", validation, async (req, res) => {
   try {
-    let errors = validationResult(req);
-    if (!errors.isEmpty()) return res.json({ error: errors.array()[0].msg });
-    let user = await UserModel.findOneAndUpdate({ token: req.params.token },
-      { token: null, active: true });
+    let user = await UserModel.findOneAndUpdate(
+      { token: req.params.token },
+      { token: null, active: true }
+    );
     if (!user) return res.json({ error: "The token is invalid" });
     console.log(`${user._id} has been activated`);
     let s1 = "display:flex;align-items:center;justify-content:center;";
@@ -29,9 +38,11 @@ router.get('/activate/:token', [
       <h1 style="font-size:3rem;">Activated</h1>
       </div>
       </body>
-      </html> 
+      </html>
       `);
-  } catch (err) { console.log(err) }
-})
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 module.exports = router;

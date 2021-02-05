@@ -4,6 +4,7 @@ import { TouchableOpacity } from "react-native";
 import styled from "styled-components";
 import axios from 'axios';
 import { UserContext } from "../globalState";
+import { validateSignIn } from './validation';
 
 export let Logo = styled.Image`
   height:125px;
@@ -66,9 +67,13 @@ function SignIn({ navigation }) {
 
   function toggleAlert() { setAlert(!alert) };
   async function submitForm() {
+    let errors = validateSignIn(email, password);
+    if (errors.length !== 0) {
+      setError(errors[0]); setAlert(false);
+    }
     setAlert(false);
     setLoading(true);
-    axios.post('http://192.168.2.97:3000/signIn', { email, password },
+    axios.post('http://192.168.83.93:3000/signIn', { email, password },
       { withCredentials: true })
       .then(async function (response) {
         if (response.data.error) {

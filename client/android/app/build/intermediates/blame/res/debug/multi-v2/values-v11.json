@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/dex/hamsa/client/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v11/values-v11.xml",
+            "outputFile": "C:\\Users\\fox\\Desktop\\hamsa\\client\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
             "map": [
                 {
-                    "source": "/home/dex/hamsa/client/node_modules/react-native-sensitive-info/android/build/intermediates/packaged_res/debug/values-v11/values-v11.xml",
+                    "source": "C:\\Users\\fox\\Desktop\\hamsa\\client\\node_modules\\react-native-sensitive-info\\android\\build\\intermediates\\packaged_res\\debug\\values-v11\\values-v11.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

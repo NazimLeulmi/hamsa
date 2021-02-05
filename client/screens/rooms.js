@@ -85,7 +85,7 @@ let Rooms = ({ navigation, route }) => {
   // This will hopefully connect once to the websockets server
   React.useEffect(() => {
     if (!socket) {
-      let sock = io('ws://192.168.2.97:3000', { withCredentials: true });
+      let sock = io('ws://192.168.83.93:3000', { withCredentials: true });
       if (sock) setSocket(sock);
     }
   }, []);
